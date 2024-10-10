@@ -1,0 +1,17 @@
+<resources>
+    <string name="app_name">SpaceCraft</string>
+    <string name="game">SpaceCraft</string>
+    <string name="play">Play</string>
+    <string name="settings">Settings</string>
+    <string name="exit">Exit</string>
+    <string name="ProfileA">ProfileA</string>
+    <string name="profilea">ProfileA</string>
+    <string name="highest_score">Highest Score</string>
+    <string name="right_arrow">right_arrow</string>
+    <string name="left_arrow">left_arrow</string>
+    <string name="alert">ALERT</string>
+    <string name="you_don_t_have_profile_to_play_yet_nplease_create_a_profile">You don\'t have profile to play yet\nPlease create a profile !</string>
+    <string name="your_profile_name">Your profile name</string>
+    <string name="save">Save</string>
+    <string name="cancel">Cancel</string>
+</resources>
