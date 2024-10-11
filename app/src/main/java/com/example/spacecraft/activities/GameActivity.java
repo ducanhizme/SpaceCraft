@@ -1,12 +1,13 @@
-package com.example.spacecraft;
+package com.example.spacecraft.activities;
 import android.graphics.Point;
 import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.WindowManager;
-import android.content.Context;
 
 import androidx.appcompat.app.AppCompatActivity;
+
+import com.example.spacecraft.components.GameView;
 
 public class GameActivity extends AppCompatActivity {
     private GameView gameView;

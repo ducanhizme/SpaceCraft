@@ -1,19 +1,20 @@
-package com.example.spacecraft;
+package com.example.spacecraft.utils;
 
 import android.content.res.Resources;
 import android.graphics.Canvas;
 import android.graphics.Paint;
 
-import com.example.spacecraft.model.Background;
+import com.example.spacecraft.models.Background;
 
 public class BackgroundManager {
     private final Background[] backgrounds;
     private final float[] backgroundOffset;
     private final float backgroundMaxScrollingSpeed;
-    private final int screenWidth;
-    private final int screenHeight;
+    private final float screenWidth;
+    private final float screenHeight;
+    ;
 
-    public BackgroundManager(int screenWidth, int screenHeight, float screenRatioY, int[] backgroundImages, Resources resources) {
+    public BackgroundManager(float screenWidth, float screenHeight, float screenRatioY, int[] backgroundImages, Resources resources) {
         this.screenWidth = screenWidth;
         this.screenHeight = screenHeight;
         backgroundOffset = new float[backgroundImages.length];
@@ -42,4 +43,5 @@ public class BackgroundManager {
             canvas.drawBitmap(backgrounds[i].background, 0, backgroundOffset[i] - screenHeight, paint);
         }
     }
+
 }

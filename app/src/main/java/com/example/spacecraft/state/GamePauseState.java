@@ -1,18 +1,15 @@
 package com.example.spacecraft.state;
 
 import android.graphics.Canvas;
-import android.graphics.Paint;
 
 import com.example.spacecraft.utils.BackgroundManager;
-import com.example.spacecraft.utils.Constants;
 
-public class BackgroundState implements GameState {
-    public static final String TAG = "BackgroundState";
+public class GamePauseState implements GameState {
+    public static final String TAG = "GamePauseState";
     private BackgroundManager backgroundManager;
 
-    public BackgroundState(BackgroundManager backgroundManager) {
+    public GamePauseState(BackgroundManager backgroundManager) {
         this.backgroundManager = backgroundManager;
-        Constants.CURRENT_STATE = BackgroundState.TAG;
     }
 
     @Override
@@ -22,6 +19,6 @@ public class BackgroundState implements GameState {
 
     @Override
     public void draw(Canvas canvas) {
-        backgroundManager.draw(canvas,new Paint());
+
     }
 }

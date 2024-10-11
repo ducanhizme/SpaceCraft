@@ -1,4 +1,4 @@
-package com.example.spacecraft.component;
+package com.example.spacecraft.components;
 
 import android.content.Context;
 import android.util.AttributeSet;

@@ -1,4 +1,4 @@
-package com.example.spacecraft.model;
+package com.example.spacecraft.models;
 
 public class Profile {
     private long id;
