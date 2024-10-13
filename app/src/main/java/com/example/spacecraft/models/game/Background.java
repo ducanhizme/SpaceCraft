@@ -1,4 +1,4 @@
-package com.example.spacecraft.models;
+package com.example.spacecraft.models.game;
 
 import android.content.res.Resources;
 import android.graphics.Bitmap;

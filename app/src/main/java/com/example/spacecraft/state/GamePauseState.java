@@ -2,6 +2,7 @@ package com.example.spacecraft.state;
 
 import android.graphics.Canvas;
 
+import com.example.spacecraft.base.GameState;
 import com.example.spacecraft.utils.BackgroundManager;
 
 public class GamePauseState implements GameState {

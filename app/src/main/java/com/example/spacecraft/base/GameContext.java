@@ -1,4 +1,4 @@
-package com.example.spacecraft.state;
+package com.example.spacecraft.base;
 
 import android.graphics.Canvas;
 
@@ -8,10 +8,6 @@ public class GameContext {
     public GameContext(GameState gameState) {
         this.currentState = gameState;
     }
-
-
-
-
 
     public void setState(GameState newState) {
         this.currentState = newState;

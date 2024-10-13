@@ -8,7 +8,7 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.spacecraft.databinding.ProfileRowRecycleViewBinding;
-import com.example.spacecraft.models.Profile;
+import com.example.spacecraft.models.app.Profile;
 
 import java.util.List;
 

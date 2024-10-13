@@ -1,10 +1,12 @@
-package com.example.spacecraft.models;
+package com.example.spacecraft.models.game;
 
 import android.content.res.Resources;
 import android.graphics.Canvas;
 import android.graphics.Paint;
 
-public class Bullet extends GameObject{
+import com.example.spacecraft.base.GameObject;
+
+public class Bullet extends GameObject {
 
 
     public Bullet(float screenWidth, float screenHeight, Resources res, int drawable, float screenRatioX, float screenRatioY) {
@@ -13,11 +15,11 @@ public class Bullet extends GameObject{
 
     @Override
     public void draw(Canvas canvas, Paint paint) {
-        canvas.drawBitmap(background, coordinate.x, coordinate.y, paint);
+        canvas.drawBitmap(getBackground(), getPoint().x, getPoint().y, paint);
     }
 
     @Override
     public void update() {
-        coordinate.y -= 200 * screenRatioY;
+        getPoint().y -= (int) (50 * getScreenRatioY());
     }
 }

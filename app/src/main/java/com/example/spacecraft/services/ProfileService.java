@@ -7,7 +7,7 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 
 import com.example.spacecraft.database.DatabaseHelper;
-import com.example.spacecraft.models.Profile;
+import com.example.spacecraft.models.app.Profile;
 
 import java.util.ArrayList;
 import java.util.List;

@@ -4,7 +4,7 @@ import android.content.res.Resources;
 import android.graphics.Canvas;
 import android.graphics.Paint;
 
-import com.example.spacecraft.models.Background;
+import com.example.spacecraft.models.game.Background;
 
 public class BackgroundManager {
     private final Background[] backgrounds;
@@ -12,11 +12,26 @@ public class BackgroundManager {
     private final float backgroundMaxScrollingSpeed;
     private final float screenWidth;
     private final float screenHeight;
+    private final Resources resources;
+
+    public float getScreenHeight() {
+        return screenHeight;
+    }
+
+    public float getScreenWidth() {
+        return screenWidth;
+    }
+
+    public Resources getResources() {
+        return resources;
+    }
+
     ;
 
     public BackgroundManager(float screenWidth, float screenHeight, float screenRatioY, int[] backgroundImages, Resources resources) {
         this.screenWidth = screenWidth;
         this.screenHeight = screenHeight;
+        this.resources = resources;
         backgroundOffset = new float[backgroundImages.length];
         backgrounds = new Background[backgroundImages.length];
 
@@ -24,7 +39,7 @@ public class BackgroundManager {
         backgroundMaxScrollingSpeed = DEFAULT_BACKGROUND_SPEED * screenRatioY;
 
         for (int i = 0; i < backgroundImages.length; i++) {
-            backgrounds[i] = new Background(screenWidth, screenHeight, resources, backgroundImages[i]);
+            backgrounds[i] = new Background(screenWidth, screenHeight, this.resources, backgroundImages[i]);
         }
     }
 

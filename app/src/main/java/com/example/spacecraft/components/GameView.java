@@ -2,42 +2,27 @@ package com.example.spacecraft.components;
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.graphics.Canvas;
-import android.hardware.Sensor;
-import android.hardware.SensorManager;
+import android.graphics.Paint;
+import android.graphics.Point;
 import android.view.SurfaceView;
 
-import com.example.spacecraft.models.Coordinate;
-import com.example.spacecraft.models.PlayerShip;
-import com.example.spacecraft.state.GameContext;
 import com.example.spacecraft.R;
-import com.example.spacecraft.state.GamePauseState;
-import com.example.spacecraft.utils.BackgroundManager;
+import com.example.spacecraft.base.GameContext;
+import com.example.spacecraft.models.game.Explosion;
 import com.example.spacecraft.state.BackgroundState;
 import com.example.spacecraft.state.GamePlayingState;
-import com.example.spacecraft.utils.Constants;
 
 @SuppressLint("ViewConstructor")
 public class GameView extends SurfaceView implements Runnable {
     private Thread thread;
     private boolean isPlaying;
     private GameContext gameContext;
-    BackgroundManager backgroundManager;
-    private final float screenWidth;
-    private final float screenHeight;
-    private final Context context;
+    private Explosion explosion;
 
-    public GameView(Context context, int x, int y) {
+    public GameView(Context context) {
         super(context);
-        this.context= context;
-        int[] backgroundImages = {R.drawable.starscape00, R.drawable.starscape01, R.drawable.starscape02, R.drawable.starscape03};
-        this.screenHeight = y;
-        this.screenWidth =x;
-        backgroundManager = new BackgroundManager(this.screenWidth, this.screenHeight, 1080f / y, backgroundImages, getResources());
-        SensorManager sensorManager = (SensorManager) context.getSystemService(Context.SENSOR_SERVICE);
-        Sensor gyroscope = sensorManager.getDefaultSensor(Sensor.TYPE_GYROSCOPE);
-        PlayerShip playerShip = new PlayerShip(screenWidth,screenHeight,sensorManager, gyroscope, getResources(), R.drawable.ship_03, 1920f / screenWidth, 1080f / screenHeight);
-        playerShip.coordinate = new Coordinate(this.screenWidth/2- (float) playerShip.WIDTH /2, this.screenHeight-playerShip.HEIGHT *2);
-        gameContext = new GameContext(new GamePlayingState(backgroundManager,playerShip));
+        gameContext = new GameContext(new BackgroundState(context));
+        explosion = new Explosion(context.getResources(), R.drawable.explosion, new Point(500,500), 128, 4);
     }
 
 
@@ -45,6 +30,7 @@ public class GameView extends SurfaceView implements Runnable {
     public void run() {
         while (isPlaying) {
             gameContext.update();
+            explosion.update();
             draw();
             sleep();
         }
@@ -55,6 +41,7 @@ public class GameView extends SurfaceView implements Runnable {
         if (getHolder().getSurface().isValid()) {
             Canvas canvas = getHolder().lockCanvas();
             gameContext.draw(canvas);
+            explosion.draw(canvas, new Paint());
             getHolder().unlockCanvasAndPost(canvas);
         }
     }
@@ -88,14 +75,6 @@ public class GameView extends SurfaceView implements Runnable {
 
     public void setGameContext(GameContext gameContext) {
         this.gameContext = gameContext;
-    }
-
-    public BackgroundManager getBackgroundManager() {
-        return backgroundManager;
-    }
-
-    public void setBackgroundManager(BackgroundManager backgroundManager) {
-        this.backgroundManager = backgroundManager;
     }
 
 
