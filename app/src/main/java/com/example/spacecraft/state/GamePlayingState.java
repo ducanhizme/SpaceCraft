@@ -30,9 +30,11 @@ public class GamePlayingState implements GameState {
     private int enemyCount;
     private final Random random;
     private final GameCharacterService gameCharacterService;
+    private final Context context;
 
     public GamePlayingState(Context context) {
         this.gameCharacterService = new GameCharacterService(context);
+        this.context = context;
         this.backgroundManager = gameCharacterService.defaultBackgroundManager();
         this.playerShip = gameCharacterService.defaultPlayerShip();
         this.enemies = new ArrayList<>();
@@ -50,6 +52,7 @@ public class GamePlayingState implements GameState {
             EnemyShip enemyShip = new EnemyShip(backgroundManager.getScreenWidth(), backgroundManager.getScreenHeight(), backgroundManager.getResources(), R.drawable.enemy, 1920f / backgroundManager.getScreenWidth(), 1080f / backgroundManager.getScreenHeight());
             enemyShip.setPoint(new Point((int) x, (int) y));
             enemies.add(enemyShip);
+            DeadNotifier healthNotifier = new DeadNotifier(enemyShip, context);
         }
     }
 
@@ -77,15 +80,15 @@ public class GamePlayingState implements GameState {
         List<Bullet> destroyedBullets = new ArrayList<>();
         for (EnemyShip enemy : enemies) {
             if (Rect.intersects(enemy.getBounds(), playerShip.getBounds())) {
-                if(playerShip.getHealth()<0){
-                    playerShip.triggerExplosion(backgroundManager.getResources());
-                }
                 playerShip.setHealth(playerShip.getHealth() - 1);
                 destroyedEnemies.add(enemy);
             }
             for (Bullet bullet : playerShip.getBullets()) {
                 if (Rect.intersects(bullet.getBounds(), enemy.getBounds())) {
-                    destroyedEnemies.add(enemy);
+                    enemy.setHealth(enemy.getHealth() - 1);
+                   if(enemy.getHealth() == 0) {
+                       Log.d(TAG, "Explode: " +"Enemy Health"+enemy.getHealth() + enemy.getExplosion().toString());
+                   }
                     destroyedBullets.add(bullet);
                 }
             }

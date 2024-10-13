@@ -57,4 +57,20 @@ public class Explosion {
     public boolean isFinished() {
         return isFinished;
     }
+
+
+    @Override
+    public String toString() {
+        return "Explosion{" +
+                "spriteSheet=" + spriteSheet +
+                ", frameWidth=" + frameWidth +
+                ", frameHeight=" + frameHeight +
+                ", frameCount=" + frameCount +
+                ", currentFrame=" + currentFrame +
+                ", frameTime=" + frameTime +
+                ", frameTimer=" + frameTimer +
+                ", point=" + point +
+                ", isFinished=" + isFinished +
+                '}';
+    }
 }

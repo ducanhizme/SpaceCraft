@@ -119,6 +119,7 @@ public class GameObject extends Subject {
      */
     public void setHealth(int health) {
         this.health = health;
+        notifyObservers(this,null);
     }
 
     /**

@@ -135,7 +135,7 @@ public PlayerShip(float screenWidth, float screenHeight, SensorManager sensorMan
             }
             getPoint().x += (int) velocityX;
             getPoint().y += (int) velocityY;
-//            shoot();
+            shoot();
         }
     }
 

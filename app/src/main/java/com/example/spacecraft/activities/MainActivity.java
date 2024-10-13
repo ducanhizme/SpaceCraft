@@ -11,6 +11,7 @@ import androidx.activity.EdgeToEdge;
 import androidx.activity.OnBackPressedCallback;
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.example.spacecraft.R;
 import com.example.spacecraft.base.GameContext;
 import com.example.spacecraft.adapters.ProfileAdapter;
 import com.example.spacecraft.components.GameView;
@@ -93,8 +94,6 @@ public class MainActivity extends AppCompatActivity {
             final GameContext gameContext = gameView.getGameContext();
             @Override
             public void handleOnBackPressed() {
-//                gameContext.setState(new GamePauseState(gameView.getBackgroundManager()));
-//                Constants.CURRENT_STATE = GamePauseState.TAG;
                 gameView.pause();
             }
         });
@@ -114,21 +113,28 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void showGameOverDialog() {
-//        new AlertDialog.Builder(this)
-//                .setTitle("Game Over")
-//                .setMessage("You have lost the game. Would you like to try again?")
-//                .setPositiveButton("Yes", (dialog, which) -> {
-//                    gameView.getGameContext().setState(new GamePlayingState(this));
-//                })
-//                .setNegativeButton("No", (dialog, which) -> {
-//                    finish();
-//                })
-//                .setCancelable(false)
-//                .show();
+        new android.os.Handler().postDelayed(() -> {
+            gameView.pause();
+        new AlertDialog.Builder(this)
+                .setTitle("Game Over")
+                .setMessage("You have lost the game. Would you like to try again?")
+                .setPositiveButton("Yes", (dialog, which) -> {
+                    gameView.getGameContext().setState(new GamePlayingState(this));
+                })
+                .setNegativeButton("No", (dialog, which) -> {
+                    finish();
+                })
+                .setCancelable(false)
+                .show();
+        }, 5000);
 
     }
 
     public GameView getGameView() {
         return this.gameView;
+    }
+
+    public ActivityMainBinding getBinding(){
+        return this.binding;
     }
 }
