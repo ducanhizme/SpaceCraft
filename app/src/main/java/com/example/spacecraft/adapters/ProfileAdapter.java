@@ -1,4 +1,4 @@
-package com.example.spacecraft.adapter;
+package com.example.spacecraft.adapters;
 
 import android.content.Context;
 import android.view.LayoutInflater;
@@ -8,9 +8,8 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.spacecraft.databinding.ProfileRowRecycleViewBinding;
-import com.example.spacecraft.model.Profile;
+import com.example.spacecraft.models.app.Profile;
 
-import java.util.ArrayList;
 import java.util.List;
 
 public class ProfileAdapter extends RecyclerView.Adapter<ProfileAdapter.ProfileViewHolder> {

@@ -5,9 +5,14 @@
     android:id="@+id/main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".MainActivity"
+    tools:context=".activities.MainActivity"
     android:background="@drawable/animated_spacebg_2_1">
 
+
+    <SurfaceView
+        android:id="@+id/surfaceView"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
     <TextView
         android:id="@+id/logo_game"
         android:layout_width="wrap_content"
@@ -24,6 +29,7 @@
         app:layout_constraintVertical_bias="0.096" />
 
     <LinearLayout
+        android:id="@+id/layout_button"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_margin="50dp"
@@ -33,7 +39,7 @@
 
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/logo_game">
-        <com.example.spacecraft.component.ProfileRecycleView
+        <com.example.spacecraft.components.ProfileRecycleView
             android:id="@+id/profileRv"
             android:layout_width="match_parent"
             android:layout_height="0dp"
@@ -81,6 +87,22 @@
             android:textColor="@color/white"
             android:textSize="25sp" />
     </LinearLayout>
+
+    <TextView
+        android:id="@+id/score"
+        android:visibility="gone"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:fontFamily="@font/barcadenobar"
+        android:text="@string/score_0"
+        android:textColor="@color/white"
+        android:layout_marginEnd="30dp"
+        android:layout_marginTop="30dp"
+        android:textSize="20sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="1.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/surfaceView" />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

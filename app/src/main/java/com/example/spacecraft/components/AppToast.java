@@ -1,21 +1,13 @@
-package com.example.spacecraft.component;
+package com.example.spacecraft.components;
 
-import android.app.Activity;
-import android.app.Application;
 import android.content.Context;
 import android.graphics.Typeface;
 import android.view.Gravity;
 import android.view.View;
-import android.view.animation.AlphaAnimation;
-import android.view.animation.Animation;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import androidx.appcompat.content.res.AppCompatResources;
-
 import com.example.spacecraft.R;
-
-import java.util.Objects;
 
 public class AppToast {
     public static void makeText(Context context, String message, int duration) {

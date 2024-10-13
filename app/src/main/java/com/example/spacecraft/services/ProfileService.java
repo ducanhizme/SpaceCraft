@@ -1,4 +1,4 @@
-package com.example.spacecraft.service;
+package com.example.spacecraft.services;
 
 import android.content.ContentValues;
 import android.content.Context;
@@ -7,7 +7,7 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 
 import com.example.spacecraft.database.DatabaseHelper;
-import com.example.spacecraft.model.Profile;
+import com.example.spacecraft.models.app.Profile;
 
 import java.util.ArrayList;
 import java.util.List;

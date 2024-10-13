@@ -1,22 +1,20 @@
-package com.example.spacecraft.model;
+package com.example.spacecraft.models.game;
 
 import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 
-import com.example.spacecraft.R;
-
 public class Background {
-    public int WIDTH ;
-    public int HEIGHT;
+    public float WIDTH ;
+    public float HEIGHT;
     public int x;
     public int y;
     public Bitmap background;
 
-    public Background(int width, int height, Resources res,int drawable) {
+    public Background(float width, float height, Resources res,int drawable) {
         this.WIDTH = width;
         this.HEIGHT = height;
         this.background = BitmapFactory.decodeResource(res, drawable);
-        this.background = Bitmap.createScaledBitmap(this.background, WIDTH, HEIGHT, false);
+        this.background = Bitmap.createScaledBitmap(this.background, (int) WIDTH, (int) HEIGHT, false);
     }
 }
