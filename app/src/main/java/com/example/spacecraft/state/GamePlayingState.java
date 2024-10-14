@@ -112,14 +112,18 @@ public class GamePlayingState implements GameState {
             case 0:
                 enemyShip = gameCharacterService.createEnemyShip(new Point(x,y),R.drawable.enemy_normal);
                 enemyShip.setHealth(3);
+                enemyShip.setScore(10);
                 break;
             case 1:
                 enemyShip = gameCharacterService.createEnemyShip(new Point(x,y),R.drawable.enemy_fast);
                 enemyShip.setHealth(4);
+                enemyShip.setSpeed(30);
+                enemyShip.setScore(20);
                 break;
             case 2:
                 enemyShip = gameCharacterService.createEnemyShip(new Point(x,y),R.drawable.enemytank);
                 enemyShip.setHealth(5);
+                enemyShip.setScore(30);
                 break;
         }
         enemyShip.setPoint(new Point(x, y));

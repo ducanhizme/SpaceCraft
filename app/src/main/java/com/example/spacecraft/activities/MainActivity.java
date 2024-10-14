@@ -1,7 +1,11 @@
 package com.example.spacecraft.activities;
 
+import android.annotation.SuppressLint;
 import android.app.Activity;
+import android.app.ActivityOptions;
 import android.app.AlertDialog;
+import android.content.Intent;
+import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -22,6 +26,7 @@ import com.example.spacecraft.services.ProfileService;
 import com.example.spacecraft.state.GamePlayingState;
 
 import java.util.List;
+import java.util.Objects;
 
 public class MainActivity extends AppCompatActivity {
     private ActivityMainBinding binding;
@@ -38,7 +43,6 @@ public class MainActivity extends AppCompatActivity {
         setContentView(binding.getRoot());
         setInputUser();
         setView();
-        handleOnBackPressed();
     }
 
     private void setView() {
@@ -48,8 +52,14 @@ public class MainActivity extends AppCompatActivity {
 
     private void setInputUser() {
         binding.playBtn.setOnClickListener(v -> {
-            startAnimationAndTransition();
+            startActivity();
+            overridePendingTransition(0, 0);
         });
+    }
+
+    private void startActivity() {
+        Intent i = new Intent(this, GameActivity.class);
+        startActivity(i);
     }
 
     @Override
@@ -87,46 +97,6 @@ public class MainActivity extends AppCompatActivity {
     protected void onPause() {
         super.onPause();
         gameView.pause();
-    }
-
-    private void handleOnBackPressed() {
-        getOnBackPressedDispatcher().addCallback(this, new OnBackPressedCallback(true) {
-            final GameContext gameContext = gameView.getGameContext();
-            @Override
-            public void handleOnBackPressed() {
-                gameView.pause();
-            }
-        });
-    }
-
-    private void startAnimationAndTransition() {
-        Animation moveUp = com.example.spacecraft.utils.Animation.moveUp(this, () -> {
-            binding.logoGame.setVisibility(View.GONE);
-        });
-        Animation moveDown = com.example.spacecraft.utils.Animation.moveDown(this, () -> {
-            binding.layoutButton.setVisibility(View.GONE);
-            binding.score.setVisibility(View.VISIBLE);
-        });
-        binding.logoGame.startAnimation(moveUp);
-        binding.layoutButton.startAnimation(moveDown);
-        gameView.getGameContext().setState(new GamePlayingState(this));
-    }
-
-    public void showGameOverDialog() {
-        new AlertDialog.Builder(this)
-                .setTitle("Game Over")
-                .setMessage("You have lost the game. Would you like to try again?")
-                .setPositiveButton("Yes", (dialog, which) -> {
-                    gameView.getGameContext().setState(new GamePlayingState(this));
-                })
-                .setNegativeButton("No", (dialog, which) -> {
-                    finish();
-                })
-                .setCancelable(false)
-                .show();
-        gameView.pause();
-
-
     }
 
     public GameView getGameView() {

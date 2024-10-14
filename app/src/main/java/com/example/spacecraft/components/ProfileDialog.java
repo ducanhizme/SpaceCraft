@@ -26,7 +26,6 @@ public class ProfileDialog extends DialogFragment {
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         binding = ProfileDialogFragmentBinding.inflate(inflater, container, false);
-
         return binding.getRoot();
     }
 

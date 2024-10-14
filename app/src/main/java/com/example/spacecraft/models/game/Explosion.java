@@ -20,7 +20,7 @@ public class Explosion {
     private boolean isFinished;
 
     public Explosion(Resources res, int drawable, Point point, int frameHeight, int frameTime) {
-        this.spriteSheet = BitmapFactory.decodeResource(res, drawable); // Load sprite from resources
+        this.spriteSheet = BitmapFactory.decodeResource(res, drawable);
         this.point = point;
         this.frameHeight = frameHeight;
         this.frameWidth = spriteSheet.getWidth() / 8;
@@ -35,8 +35,8 @@ public class Explosion {
         if (!isFinished) {
             int srcX = currentFrame * frameWidth;
             int srcY = 0;
-            Rect src = new Rect(srcX, srcY, srcX + frameWidth, srcY + frameWidth); // Source rectangle
-            Rect dst = new Rect(point.x, point.y, point.x + frameWidth, point.y + frameWidth); // Destination rectangle
+            Rect src = new Rect(srcX, srcY, srcX + frameWidth, srcY + frameWidth);
+            Rect dst = new Rect(point.x, point.y, point.x + frameWidth, point.y + frameWidth);
             canvas.drawBitmap(spriteSheet, src, dst, paint);
         }
     }

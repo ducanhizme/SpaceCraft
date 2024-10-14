@@ -22,6 +22,7 @@ import java.util.List;
 public class GameObject extends Subject {
     private int health = 3;
     private int speed = 20;
+    private int score;
     private float screenWidth;
     private float screenHeight;
     private int WIDTH;
@@ -311,5 +312,11 @@ public class GameObject extends Subject {
     }
 
 
+    public int getScore() {
+        return score;
+    }
 
+    public void setScore(int score) {
+        this.score = score;
+    }
 }
