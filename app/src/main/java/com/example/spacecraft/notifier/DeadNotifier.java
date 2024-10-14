@@ -2,6 +2,7 @@ package com.example.spacecraft.notifier;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
+import android.util.Log;
 
 import com.example.spacecraft.activities.MainActivity;
 import com.example.spacecraft.base.GameObject;
@@ -20,18 +21,11 @@ public class DeadNotifier extends Observer {
     @SuppressLint("SetTextI18n")
     @Override
     public void notify(GameObject gameObject, Object arg) {
-        if (gameObject.getHealth() <= 0) {
-            gameObject.triggerExplosion(context.getResources());
-            if (gameObject instanceof PlayerShip) {
-                if (context instanceof MainActivity) {
-                    ((MainActivity) context).runOnUiThread(() -> ((MainActivity) context).showGameOverDialog());
-                }
-            }else{
-                if (context instanceof MainActivity) {
-                    ((MainActivity) context).runOnUiThread(() -> ((MainActivity) context).getBinding().score.setText("Dead"));
-                }
+        if (gameObject instanceof PlayerShip) {
+            if (context instanceof MainActivity) {
+                ((MainActivity) context).runOnUiThread(() -> ((MainActivity) context).showGameOverDialog());
             }
         }
-
+        Log.d("DeadNotifier", "notify: " + gameObject.getHealth());
     }
 }

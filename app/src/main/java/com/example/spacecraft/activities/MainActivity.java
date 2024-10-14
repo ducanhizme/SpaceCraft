@@ -113,8 +113,6 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void showGameOverDialog() {
-        new android.os.Handler().postDelayed(() -> {
-            gameView.pause();
         new AlertDialog.Builder(this)
                 .setTitle("Game Over")
                 .setMessage("You have lost the game. Would you like to try again?")
@@ -126,7 +124,8 @@ public class MainActivity extends AppCompatActivity {
                 })
                 .setCancelable(false)
                 .show();
-        }, 5000);
+        gameView.pause();
+
 
     }
 

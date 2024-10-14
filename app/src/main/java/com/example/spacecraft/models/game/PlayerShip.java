@@ -111,7 +111,6 @@ public PlayerShip(float screenWidth, float screenHeight, SensorManager sensorMan
         }
         if (getExplosion() != null) {
             getExplosion().update();
-            onGameObjectChanged();
         }
     }
 

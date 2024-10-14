@@ -5,7 +5,10 @@ import android.content.res.Resources;
 import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.graphics.Point;
+import android.graphics.drawable.Drawable;
 import android.util.Log;
+
+import androidx.appcompat.graphics.drawable.DrawableContainerCompat;
 
 import com.example.spacecraft.base.GameObject;
 
@@ -13,6 +16,7 @@ public class EnemyShip extends GameObject {
     private float velocityX, velocityY;
     private float accelerationX, accelerationY;
     private float targetX, targetY;
+    private boolean exploding = false;
 
     public EnemyShip(float screenWidth, float screenHeight, Resources res, int drawable, float screenRatioX, float screenRatioY) {
         super(screenWidth, screenHeight, res, drawable, screenRatioX, screenRatioY);
@@ -30,10 +34,9 @@ public class EnemyShip extends GameObject {
     public void draw(Canvas canvas, Paint paint) {
         if (getExplosion() != null && !getExplosion().isFinished()) {
             getExplosion().draw(canvas, paint);
-        }else{
+        } else {
             canvas.drawBitmap(getBackground(), getPoint().x, getPoint().y, paint);
         }
-
     }
 
     @Override
@@ -69,8 +72,20 @@ public class EnemyShip extends GameObject {
 
             if (getExplosion() != null) {
                 getExplosion().update();
-                onGameObjectChanged();
             }
         }
+    }
+
+    @Override
+    public void setHealth(int health) {
+        super.setHealth(health);
+        if (health <= 0 && !exploding) {
+            triggerExplosion(getRes());
+            exploding = true;
+        }
+    }
+
+    public boolean isExploding() {
+        return exploding;
     }
 }

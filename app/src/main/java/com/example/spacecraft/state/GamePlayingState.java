@@ -1,4 +1,3 @@
-// app/src/main/java/com/example/spacecraft/state/GamePlayingState.java
 package com.example.spacecraft.state;
 
 import android.content.Context;
@@ -12,6 +11,7 @@ import com.example.spacecraft.R;
 import com.example.spacecraft.base.GameState;
 import com.example.spacecraft.models.game.Bullet;
 import com.example.spacecraft.models.game.EnemyShip;
+import com.example.spacecraft.models.game.Explosion;
 import com.example.spacecraft.notifier.DeadNotifier;
 import com.example.spacecraft.utils.BackgroundManager;
 import com.example.spacecraft.models.game.PlayerShip;
@@ -26,6 +26,7 @@ public class GamePlayingState implements GameState {
     private final BackgroundManager backgroundManager;
     private final PlayerShip playerShip;
     private final List<EnemyShip> enemies;
+    private final List<Explosion> explosions;
     private int enemiesDestroyed;
     private int enemyCount;
     private final Random random;
@@ -38,6 +39,7 @@ public class GamePlayingState implements GameState {
         this.backgroundManager = gameCharacterService.defaultBackgroundManager();
         this.playerShip = gameCharacterService.defaultPlayerShip();
         this.enemies = new ArrayList<>();
+        this.explosions = new ArrayList<>();
         this.enemiesDestroyed = 0;
         this.enemyCount = 3;
         this.random = new Random();
@@ -63,6 +65,14 @@ public class GamePlayingState implements GameState {
         for (EnemyShip enemy : enemies) {
             enemy.update();
         }
+        List<Explosion> finishedExplosions = new ArrayList<>();
+        for (Explosion explosion : explosions) {
+            explosion.update();
+            if (explosion.isFinished()) {
+                finishedExplosions.add(explosion);
+            }
+        }
+        explosions.removeAll(finishedExplosions);
         checkCollisions();
     }
 
@@ -73,6 +83,9 @@ public class GamePlayingState implements GameState {
         for (EnemyShip enemy : enemies) {
             enemy.draw(canvas, new Paint());
         }
+        for (Explosion explosion : explosions) {
+            explosion.draw(canvas, new Paint());
+        }
     }
 
     private void checkCollisions() {
@@ -81,15 +94,21 @@ public class GamePlayingState implements GameState {
         for (EnemyShip enemy : enemies) {
             if (Rect.intersects(enemy.getBounds(), playerShip.getBounds())) {
                 playerShip.setHealth(playerShip.getHealth() - 1);
+                if (playerShip.getHealth() <= 0) {
+                    playerShip.setExplosion(new Explosion(backgroundManager.getResources(), R.drawable.explosion, playerShip.getPoint(), 128, 4));
+                    explosions.add(playerShip.getExplosion());
+                }
                 destroyedEnemies.add(enemy);
             }
             for (Bullet bullet : playerShip.getBullets()) {
                 if (Rect.intersects(bullet.getBounds(), enemy.getBounds())) {
                     enemy.setHealth(enemy.getHealth() - 1);
-                   if(enemy.getHealth() == 0) {
-                       Log.d(TAG, "Explode: " +"Enemy Health"+enemy.getHealth() + enemy.getExplosion().toString());
-                   }
                     destroyedBullets.add(bullet);
+                    if(enemy.getHealth() <= 0) {
+                        enemy.setExplosion(new Explosion(backgroundManager.getResources(), R.drawable.explosion, enemy.getPoint(), 128, 4));
+                        explosions.add(enemy.getExplosion());
+                        destroyedEnemies.add(enemy);
+                    }
                 }
             }
         }
@@ -100,7 +119,6 @@ public class GamePlayingState implements GameState {
             enemiesDestroyed = 0;
             enemyCount++;
             initializeEnemies();
-            Log.d(TAG, "checkCollisions: " + enemyCount);
         }
     }
 

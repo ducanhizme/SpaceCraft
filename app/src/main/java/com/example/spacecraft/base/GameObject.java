@@ -37,10 +37,10 @@ public class GameObject extends Subject {
     /**
      * Khởi tạo một đối tượng GameObject mới.
      *
-     * @param screenWidth chiều rộng màn hình
+     * @param screenWidth  chiều rộng màn hình
      * @param screenHeight chiều cao màn hình
-     * @param res tài nguyên của ứng dụng
-     * @param drawable mã tài nguyên hình ảnh
+     * @param res          tài nguyên của ứng dụng
+     * @param drawable     mã tài nguyên hình ảnh
      * @param screenRatioX tỉ lệ màn hình theo chiều ngang
      * @param screenRatioY tỉ lệ màn hình theo chiều dọc
      */
@@ -64,7 +64,7 @@ public class GameObject extends Subject {
      * Vẽ đối tượng lên canvas.
      *
      * @param canvas canvas để vẽ lên
-     * @param paint sơn để sử dụng cho việc vẽ
+     * @param paint  sơn để sử dụng cho việc vẽ
      */
     public void draw(Canvas canvas, Paint paint) {
     }
@@ -95,7 +95,6 @@ public class GameObject extends Subject {
     }
 
 
-
     /**
      * Gọi phương thức này khi đối tượng thay đổi.
      */
@@ -119,7 +118,7 @@ public class GameObject extends Subject {
      */
     public void setHealth(int health) {
         this.health = health;
-        notifyObservers(this,null);
+
     }
 
     /**
@@ -308,6 +307,9 @@ public class GameObject extends Subject {
 
     public void setExplosion(Explosion explosion) {
         this.explosion = explosion;
+        notifyObservers(this, null);
     }
+
+
 
 }
