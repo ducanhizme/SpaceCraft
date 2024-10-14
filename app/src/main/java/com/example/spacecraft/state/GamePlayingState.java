@@ -48,15 +48,85 @@ public class GamePlayingState implements GameState {
     }
 
     private void initializeEnemies() {
-        for (int i = 0; i < enemyCount; i++) {
-            float x = random.nextFloat() * backgroundManager.getScreenWidth();
-            float y = random.nextFloat() * backgroundManager.getScreenHeight() / 2;
-            EnemyShip enemyShip = new EnemyShip(backgroundManager.getScreenWidth(), backgroundManager.getScreenHeight(), backgroundManager.getResources(), R.drawable.enemy, 1920f / backgroundManager.getScreenWidth(), 1080f / backgroundManager.getScreenHeight());
-            enemyShip.setPoint(new Point((int) x, (int) y));
-            enemies.add(enemyShip);
-            DeadNotifier healthNotifier = new DeadNotifier(enemyShip, context);
+
+        final int TYPE_NORMAL =0;
+        final int TYPE_FAST =1;
+        final int TYPE_TANK =2;
+        switch (random.nextInt(3)) {
+            case 0:
+                spawnEnemyCircularFormation();
+                break;
+            case 1:
+                spawnEnemyGridFormation();
+                break;
+            case 2:
+                spawnEnemyZigzagFormation();
+                break;
         }
     }
+
+    private void spawnEnemyGridFormation() {
+        int spacingX = (int) (backgroundManager.getScreenWidth() / enemyCount);
+        int spacingY = (int) (backgroundManager.getScreenHeight() / (enemyCount*2));
+
+        int totalEnemies = 0;
+        for (int row = 0; row < enemyCount && totalEnemies < enemyCount; row++) {
+            for (int col = 0; col < enemyCount && totalEnemies < enemyCount; col++) {
+                int x = col * spacingX + spacingX / 2;
+                int y = row * spacingY + spacingY / 2;
+                createEnemyShip(x, y);
+                totalEnemies++;
+            }
+        }
+    }
+
+    private void spawnEnemyCircularFormation() {
+        int centerX = (int) (backgroundManager.getScreenWidth() / 2);
+        int centerY = (int) (backgroundManager.getScreenHeight() / 4);
+        float radius = backgroundManager.getScreenWidth() / 6;
+
+        for (int i = 0; i < enemyCount; i++) {
+            double angle = 2 * Math.PI * i / enemyCount;
+            int x = (int) (centerX + radius * Math.cos(angle));
+            int y = (int) (centerY + radius * Math.sin(angle));
+            createEnemyShip(x, y);
+        }
+    }
+
+    private void spawnEnemyZigzagFormation() {
+        int spacingX = (int) (backgroundManager.getScreenWidth() / enemyCount);
+        int spacingY = (int) (backgroundManager.getScreenHeight() / 4);
+
+        for (int i = 0; i < enemyCount; i++) {
+            int x = i * spacingX + spacingX / 2;
+            int y = (i % 2 == 0) ? spacingY : spacingY * 2;
+            createEnemyShip(x, y);
+        }
+    }
+
+
+    private void createEnemyShip(int x, int y) {
+        EnemyShip enemyShip = null;
+        int enemyType = random.nextInt(3);
+        switch (enemyType) {
+            case 0:
+                enemyShip = gameCharacterService.createEnemyShip(new Point(x,y),R.drawable.enemy_normal);
+                enemyShip.setHealth(3);
+                break;
+            case 1:
+                enemyShip = gameCharacterService.createEnemyShip(new Point(x,y),R.drawable.enemy_fast);
+                enemyShip.setHealth(4);
+                break;
+            case 2:
+                enemyShip = gameCharacterService.createEnemyShip(new Point(x,y),R.drawable.enemytank);
+                enemyShip.setHealth(5);
+                break;
+        }
+        enemyShip.setPoint(new Point(x, y));
+        enemies.add(enemyShip);
+        DeadNotifier healthNotifier = new DeadNotifier(enemyShip, context);
+    }
+
 
     @Override
     public void update() {
