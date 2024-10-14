@@ -7,6 +7,7 @@ import android.hardware.Sensor;
 import android.hardware.SensorManager;
 
 import com.example.spacecraft.R;
+import com.example.spacecraft.models.game.EnemyShip;
 import com.example.spacecraft.models.game.PlayerShip;
 import com.example.spacecraft.utils.BackgroundManager;
 import com.example.spacecraft.utils.CommonHelper;
@@ -30,11 +31,19 @@ public class GameCharacterService {
         this.screenRatioY = 1080f / deviceSize.y;
     }
 
+    public EnemyShip createEnemyShip(Point point, int drawable) {
+        assert this.deviceSize != null;
+        EnemyShip enemyShip = new EnemyShip(this.deviceSize.x, deviceSize.y, context.getResources(), drawable, 1920f / deviceSize.x, 1080f / deviceSize.y);
+        enemyShip.setPoint(point);
+        return enemyShip;
+    }
+
     public PlayerShip defaultPlayerShip() {
         SensorManager sensorManager = (SensorManager) context.getSystemService(Context.SENSOR_SERVICE);
         Sensor gyroscope = sensorManager.getDefaultSensor(Sensor.TYPE_GYROSCOPE);
         PlayerShip playerShip = new PlayerShip(this.deviceSize.x, deviceSize.y, sensorManager, gyroscope, context.getResources(), R.drawable.playership, screenRatioX, screenRatioY);
         playerShip.setPoint( new Point((int) (deviceSize.x / 2f - playerShip.getWIDTH() / 2f), (int) (deviceSize.y - playerShip.getHEIGHT() * 10 * screenRatioY)));;
+        playerShip.setHealth(5);
         return playerShip;
     }
 
