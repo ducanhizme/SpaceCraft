@@ -16,4 +16,8 @@
     <string name="cancel">Cancel</string>
     <string name="_0">0</string>
     <string name="score">Score: </string>
+    <string name="game_over">Game Over</string>
+    <string name="height_score">Height Score:</string>
+    <string name="replay">Replay</string>
+    <string name="default_score">100</string>
 </resources>

@@ -48,5 +48,6 @@ public class ProfileDialog extends DialogFragment {
 
     public interface DialogListener {
         void onDialogPositiveClick(String inputText);
+        void onDialogNegativeClick();
     }
 }

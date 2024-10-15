@@ -7,7 +7,6 @@ import android.graphics.Point;
 import android.graphics.Rect;
 import android.util.Log;
 
-import com.example.spacecraft.R;
 import com.example.spacecraft.base.GameState;
 import com.example.spacecraft.models.game.Bullet;
 import com.example.spacecraft.models.game.EnemyShip;
@@ -16,6 +15,7 @@ import com.example.spacecraft.notifier.DeadNotifier;
 import com.example.spacecraft.utils.BackgroundManager;
 import com.example.spacecraft.models.game.PlayerShip;
 import com.example.spacecraft.services.GameCharacterService;
+import com.example.spacecraft.utils.Constants;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -43,15 +43,12 @@ public class GamePlayingState implements GameState {
         this.enemiesDestroyed = 0;
         this.enemyCount = 3;
         this.random = new Random();
-        DeadNotifier healthNotifier = new DeadNotifier(playerShip, context);
+        DeadNotifier deadNotifier = new DeadNotifier(playerShip, context);
+        Log.d("GamePlayingState", "PlayerShipHealth: " + playerShip.getHealth());
         initializeEnemies();
     }
 
     private void initializeEnemies() {
-
-        final int TYPE_NORMAL =0;
-        final int TYPE_FAST =1;
-        final int TYPE_TANK =2;
         switch (random.nextInt(3)) {
             case 0:
                 spawnEnemyCircularFormation();
@@ -68,7 +65,6 @@ public class GamePlayingState implements GameState {
     private void spawnEnemyGridFormation() {
         int spacingX = (int) (backgroundManager.getScreenWidth() / enemyCount);
         int spacingY = (int) (backgroundManager.getScreenHeight() / (enemyCount*2));
-
         int totalEnemies = 0;
         for (int row = 0; row < enemyCount && totalEnemies < enemyCount; row++) {
             for (int col = 0; col < enemyCount && totalEnemies < enemyCount; col++) {
@@ -110,25 +106,25 @@ public class GamePlayingState implements GameState {
         int enemyType = random.nextInt(3);
         switch (enemyType) {
             case 0:
-                enemyShip = gameCharacterService.createEnemyShip(new Point(x,y),R.drawable.enemy_normal);
-                enemyShip.setHealth(3);
+                enemyShip = gameCharacterService.createEnemyShip(new Point(x,y), Constants.ENEMY_SHIP_NORMAL);
+                enemyShip.setHealth(Constants.ENEMY_SHIP_NORMAL_HEALTH);
                 enemyShip.setScore(10);
                 break;
             case 1:
-                enemyShip = gameCharacterService.createEnemyShip(new Point(x,y),R.drawable.enemy_fast);
-                enemyShip.setHealth(4);
+                enemyShip = gameCharacterService.createEnemyShip(new Point(x,y),Constants.ENEMY_SHIP_FAST);
+                enemyShip.setHealth(Constants.ENEMY_SHIP_FAST_HEALTH);
                 enemyShip.setSpeed(30);
                 enemyShip.setScore(20);
                 break;
             case 2:
-                enemyShip = gameCharacterService.createEnemyShip(new Point(x,y),R.drawable.enemytank);
-                enemyShip.setHealth(5);
+                enemyShip = gameCharacterService.createEnemyShip(new Point(x,y),Constants.ENEMY_SHIP_TANK);
+                enemyShip.setHealth(Constants.ENEMY_SHIP_TANK_HEALTH);
                 enemyShip.setScore(30);
                 break;
         }
         enemyShip.setPoint(new Point(x, y));
         enemies.add(enemyShip);
-        DeadNotifier healthNotifier = new DeadNotifier(enemyShip, context);
+        DeadNotifier deadNotifier = new DeadNotifier(enemyShip, context);
     }
 
 
@@ -168,8 +164,10 @@ public class GamePlayingState implements GameState {
         for (EnemyShip enemy : enemies) {
             if (Rect.intersects(enemy.getBounds(), playerShip.getBounds())) {
                 playerShip.setHealth(playerShip.getHealth() - 1);
+                Log.d("GamePlayingState", "PlayerShipHealth desc: " + playerShip.getHealth());
                 if (playerShip.getHealth() <= 0) {
-                    playerShip.setExplosion(new Explosion(backgroundManager.getResources(), R.drawable.explosion, playerShip.getPoint(), 128, 4));
+                    Log.d("GamePlayingState", "PlayerShipHealth dead: " + playerShip.getHealth());
+                    playerShip.setExplosion(new Explosion(backgroundManager.getResources(), Constants.EXPLOSION, playerShip.getPoint(), 128, 4));
                     explosions.add(playerShip.getExplosion());
                 }
                 destroyedEnemies.add(enemy);
@@ -179,7 +177,7 @@ public class GamePlayingState implements GameState {
                     enemy.setHealth(enemy.getHealth() - 1);
                     destroyedBullets.add(bullet);
                     if(enemy.getHealth() <= 0) {
-                        enemy.setExplosion(new Explosion(backgroundManager.getResources(), R.drawable.explosion, enemy.getPoint(), 128, 4));
+                        enemy.setExplosion(new Explosion(backgroundManager.getResources(), Constants.EXPLOSION, enemy.getPoint(), 128, 4));
                         explosions.add(enemy.getExplosion());
                         destroyedEnemies.add(enemy);
                     }

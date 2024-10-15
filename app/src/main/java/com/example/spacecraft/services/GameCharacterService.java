@@ -41,9 +41,9 @@ public class GameCharacterService {
     public PlayerShip defaultPlayerShip() {
         SensorManager sensorManager = (SensorManager) context.getSystemService(Context.SENSOR_SERVICE);
         Sensor gyroscope = sensorManager.getDefaultSensor(Sensor.TYPE_GYROSCOPE);
-        PlayerShip playerShip = new PlayerShip(this.deviceSize.x, deviceSize.y, sensorManager, gyroscope, context.getResources(), R.drawable.playership, screenRatioX, screenRatioY);
+        PlayerShip playerShip = new PlayerShip(this.deviceSize.x, deviceSize.y, sensorManager, gyroscope, context.getResources(), Constants.PLAYER_SHIP, screenRatioX, screenRatioY);
         playerShip.setPoint( new Point((int) (deviceSize.x / 2f - playerShip.getWIDTH() / 2f), (int) (deviceSize.y - playerShip.getHEIGHT() * 10 * screenRatioY)));;
-        playerShip.setHealth(5);
+        playerShip.setHealth(Constants.PLAYER_SHIP_HEALTH);
         return playerShip;
     }
 

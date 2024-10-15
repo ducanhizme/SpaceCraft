@@ -66,17 +66,27 @@ public class MainActivity extends AppCompatActivity {
     protected void onStart() {
         super.onStart();
         profileService = new ProfileService(this);
-        checkCurrentProfile();
         profiles = profileService.getAllProfiles();
         SetAdapter();
+        int currentProfileId = binding.profileRv.getCurrentProfileIndex();
+        profileService.saveProfileIdToPrefs((int)profiles.get(currentProfileId).getId());
+        checkCurrentProfile();
     }
 
     private void checkCurrentProfile() {
         if (profileService.getProfileIdInPrefs() < 0) {
-            dialog = new ProfileDialog(inputText -> {
-                Profile profile = new Profile(inputText, 0);
-                long profileId = profileService.addProfile(profile);
-                profileService.saveProfileIdToPrefs(profileId);
+            dialog = new ProfileDialog(new ProfileDialog.DialogListener() {
+                @Override
+                public void onDialogPositiveClick(String inputText) {
+                    Profile profile = new Profile(inputText, 0);
+                    long profileId = profileService.addProfile(profile);
+                    profileService.saveProfileIdToPrefs(profileId);
+                }
+
+                @Override
+                public void onDialogNegativeClick() {
+
+                }
             });
             dialog.show(getSupportFragmentManager(), ProfileDialog.TAG);
         }

@@ -23,18 +23,19 @@ public class DeadNotifier extends Observer {
     @SuppressLint("SetTextI18n")
     @Override
     public void notify(GameObject gameObject, Object arg) {
-        if (gameObject instanceof PlayerShip) {
-            if (context instanceof MainActivity) {
-//                ((MainActivity) context).runOnUiThread(() -> ((MainActivity) context).showGameOverDialog());
-            }
-        }else if(gameObject instanceof EnemyShip){
             if (context instanceof GameActivity) {
-                ((GameActivity) context).runOnUiThread(() -> {
-                    int currentScore = Integer.parseInt(((GameActivity) context).getBinding().score.getText().toString());
-                    ((GameActivity) context).getBinding().score.setText(String.valueOf(currentScore + gameObject.getScore()));
-                });
+            GameActivity gameActivity = (GameActivity) context;
+            gameActivity.runOnUiThread(() -> {
+                    if (gameObject instanceof PlayerShip) {
+                    gameActivity.updateHealthBar(gameObject.getHealth());
+                    if (gameObject.getHealth() <= 0) {
+                        gameActivity.showGameOverDialog();
+                    }
+                } else if (gameObject instanceof EnemyShip && gameObject.getHealth() <= 0) {
+                    int currentScore = Integer.parseInt(gameActivity.getBinding().score.getText().toString());
+                    gameActivity.getBinding().score.setText(String.valueOf(currentScore + gameObject.getScore()));
             }
+            });
         }
-        Log.d("DeadNotifier", "notify: " + gameObject.getHealth());
     }
 }

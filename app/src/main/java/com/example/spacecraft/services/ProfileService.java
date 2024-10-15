@@ -72,8 +72,8 @@ public class ProfileService {
         return profileList;
     }
 
-    public boolean updateProfileScore(long profileId, int newScore) {
-        boolean isUpdated = false;
+    public void updateProfileScore(int newScore) {
+        long profileId = getProfileIdInPrefs();
         SQLiteDatabase db = dbHelper.getWritableDatabase();
         String[] columns = {DatabaseHelper.COLUMN_HIGHEST_SCORE};
         String selection = DatabaseHelper.COLUMN_ID + " = ?";
@@ -86,11 +86,9 @@ public class ProfileService {
                     ContentValues values = new ContentValues();
                     values.put(DatabaseHelper.COLUMN_HIGHEST_SCORE, newScore);
                     db.update(DatabaseHelper.TABLE_NAME, values, DatabaseHelper.COLUMN_ID + " = ?", new String[]{String.valueOf(profileId)});
-                    isUpdated = true;
                 }
             }
         }
-        return isUpdated;
     }
 
     public void deleteProfile(long id) {
@@ -105,8 +103,8 @@ public class ProfileService {
         editor.apply();
     }
 
-    public int getProfileIdInPrefs() {
-        return sharedPreferences.getInt(KEY_PROFILE_ID, -1);
+    public Long getProfileIdInPrefs() {
+        return sharedPreferences.getLong(KEY_PROFILE_ID, -1);
     }
 
     public void clearProfileIdInPrefs() {

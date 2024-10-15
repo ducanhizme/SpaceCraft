@@ -11,6 +11,7 @@ import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
 import com.example.spacecraft.R;
 import com.example.spacecraft.base.GameObject;
+import com.example.spacecraft.utils.Constants;
 
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
@@ -45,7 +46,7 @@ public PlayerShip(float screenWidth, float screenHeight, SensorManager sensorMan
     public void shoot() {
         long currentTime = System.currentTimeMillis();
         if (currentTime - lastShotTime >= 500) {
-            Bullet bullet = new Bullet(getScreenWidth(), getScreenHeight(), getRes(), R.drawable.laserblue, getScreenRatioX(), getScreenRatioY());
+            Bullet bullet = new Bullet(getScreenWidth(), getScreenHeight(), getRes(), Constants.BULLET, getScreenRatioX(), getScreenRatioY());
             bullet.setPoint(new Point(getPoint().x + getWIDTH() / 2 + bullet.getWIDTH() / 2, getPoint().y - getHEIGHT() / 2));
             bullets.add(bullet);
             lastShotTime = currentTime;
@@ -87,11 +88,9 @@ public PlayerShip(float screenWidth, float screenHeight, SensorManager sensorMan
     @Override
     public void update() {
         long currentTime = System.currentTimeMillis();
-        if (currentTime - lastUpdateTime >= 16) { // Update at ~60 FPS
-            getPoint().x += velocityX;
-            getPoint().y += velocityY;
-
-            // Ensure the ship stays within screen bounds
+        if (currentTime - lastUpdateTime >= 16) {
+            getPoint().x += (int) velocityX;
+            getPoint().y += (int) velocityY;
             if (getPoint().x < 0) getPoint().x = 0;
             if (getPoint().x > getScreenWidth() - getWIDTH())
                 getPoint().x = (int) (getScreenWidth() - getWIDTH());
@@ -101,8 +100,6 @@ public PlayerShip(float screenWidth, float screenHeight, SensorManager sensorMan
 
             lastUpdateTime = currentTime;
         }
-
-        // Update bullets
         for (Bullet bullet : bullets) {
             bullet.update();
             if (bullet.getPoint().y < 0) {

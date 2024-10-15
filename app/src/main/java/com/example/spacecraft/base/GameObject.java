@@ -119,7 +119,7 @@ public class GameObject extends Subject {
      */
     public void setHealth(int health) {
         this.health = health;
-
+        onGameObjectChanged();
     }
 
     /**
@@ -308,7 +308,6 @@ public class GameObject extends Subject {
 
     public void setExplosion(Explosion explosion) {
         this.explosion = explosion;
-        notifyObservers(this, null);
     }
 
 
