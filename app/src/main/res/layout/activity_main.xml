@@ -71,12 +71,23 @@
             android:textSize="25sp" />
 
         <androidx.appcompat.widget.AppCompatButton
+            android:id="@+id/profileBtn"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="20dp"
             android:background="@drawable/button_border"
             android:fontFamily="@font/barcadebobarbold"
-            android:text="@string/settings"
+            android:text="@string/profile"
+            android:textColor="@color/white"
+            android:textSize="25sp" />
+        <androidx.appcompat.widget.AppCompatButton
+            android:id="@+id/connectToGlobalBtn"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="20dp"
+            android:background="@drawable/button_border"
+            android:fontFamily="@font/barcadebobarbold"
+            android:text="@string/connect_to_global"
             android:textColor="@color/white"
             android:textSize="25sp" />
 

@@ -1,0 +1,47 @@
+{
+  "project_info": {
+    "project_number": "711677468534",
+    "project_id": "spacecraft-4d6af",
+    "storage_bucket": "spacecraft-4d6af.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:711677468534:android:a37cab0bd72e5cc2f36457",
+        "android_client_info": {
+          "package_name": "com.example.spacecraft"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "711677468534-7r8vc4b1ebfrf8cg0orrfkjal5r7aev1.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.spacecraft",
+            "certificate_hash": "9fb796b19102d0bce1f537ec2172717503157302"
+          }
+        },
+        {
+          "client_id": "711677468534-9ejp01hlje53vqp1bap0n3h9aehrjck4.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCrEXr8ve4oOdBWi23mb7WTOVWrElF4aGI"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "711677468534-9ejp01hlje53vqp1bap0n3h9aehrjck4.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

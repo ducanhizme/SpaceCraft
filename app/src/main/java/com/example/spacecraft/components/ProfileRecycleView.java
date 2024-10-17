@@ -69,5 +69,8 @@ public class ProfileRecycleView extends LinearLayout {
     public void setCurrentProfileIndex(int currentProfileIndex) {
         this.currentProfileIndex = currentProfileIndex;
     }
+    public RecyclerView getRecyclerView() {
+        return binding.recyclerView;
+    }
 
 }

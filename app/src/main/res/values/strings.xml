@@ -2,7 +2,7 @@
     <string name="app_name">SpaceCraft</string>
     <string name="game">SpaceCraft</string>
     <string name="play">Play</string>
-    <string name="settings">Settings</string>
+    <string name="profile">New Profile</string>
     <string name="exit">Exit</string>
     <string name="ProfileA">ProfileA</string>
     <string name="profilea">ProfileA</string>
@@ -20,4 +20,5 @@
     <string name="height_score">Height Score:</string>
     <string name="replay">Replay</string>
     <string name="default_score">100</string>
+    <string name="connect_to_global">Connect to Global</string>
 </resources>

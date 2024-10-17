@@ -1,32 +1,20 @@
 package com.example.spacecraft.activities;
 
 import android.annotation.SuppressLint;
-import android.app.Activity;
-import android.app.ActivityOptions;
-import android.app.AlertDialog;
 import android.content.Intent;
-import android.os.Build;
 import android.os.Bundle;
-import android.util.Log;
-import android.view.View;
-import android.view.animation.Animation;
 
 import androidx.activity.EdgeToEdge;
-import androidx.activity.OnBackPressedCallback;
 import androidx.appcompat.app.AppCompatActivity;
 
-import com.example.spacecraft.R;
-import com.example.spacecraft.base.GameContext;
 import com.example.spacecraft.adapters.ProfileAdapter;
 import com.example.spacecraft.components.GameView;
 import com.example.spacecraft.components.ProfileDialog;
 import com.example.spacecraft.databinding.ActivityMainBinding;
 import com.example.spacecraft.models.app.Profile;
 import com.example.spacecraft.services.ProfileService;
-import com.example.spacecraft.state.GamePlayingState;
 
 import java.util.List;
-import java.util.Objects;
 
 public class MainActivity extends AppCompatActivity {
     private ActivityMainBinding binding;
@@ -50,10 +38,30 @@ public class MainActivity extends AppCompatActivity {
         binding.main.addView(gameView, 0);
     }
 
+    @SuppressLint("SetTextI18n")
     private void setInputUser() {
         binding.playBtn.setOnClickListener(v -> {
             startActivity();
             overridePendingTransition(0, 0);
+        });
+
+        binding.profileBtn.setOnClickListener(v -> {
+            ProfileDialog dialog = ProfileDialog.newInstance(new ProfileDialog.DialogListener() {
+                @Override
+                public void onDialogPositiveClick(String inputText) {
+                    createProfile(inputText);
+                    profiles = profileService.getAllProfiles();
+                    setAdapter();
+                }
+
+                @Override
+                public void onDialogNegativeClick() {
+
+                }
+            }, "Profile", "Enter your new profile name to start new game");
+            dialog.show(getSupportFragmentManager(), ProfileDialog.TAG);
+
+
         });
     }
 
@@ -62,12 +70,11 @@ public class MainActivity extends AppCompatActivity {
         startActivity(i);
     }
 
-    @Override
     protected void onStart() {
         super.onStart();
         profileService = new ProfileService(this);
         profiles = profileService.getAllProfiles();
-        SetAdapter();
+        setAdapter();
         int currentProfileId = binding.profileRv.getCurrentProfileIndex();
         profileService.saveProfileIdToPrefs((int)profiles.get(currentProfileId).getId());
         checkCurrentProfile();
@@ -78,9 +85,7 @@ public class MainActivity extends AppCompatActivity {
             dialog = new ProfileDialog(new ProfileDialog.DialogListener() {
                 @Override
                 public void onDialogPositiveClick(String inputText) {
-                    Profile profile = new Profile(inputText, 0);
-                    long profileId = profileService.addProfile(profile);
-                    profileService.saveProfileIdToPrefs(profileId);
+                    createProfile(inputText);
                 }
 
                 @Override
@@ -92,8 +97,27 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    private void SetAdapter() {
+    private void createProfile(String inputText){
+        Profile profile = new Profile(inputText, 0);
+        long profileId = profileService.addProfile(profile);
+        profileService.saveProfileIdToPrefs(profileId);
+    }
+
+    private void setAdapter() {
         binding.profileRv.setAdapter(new ProfileAdapter(this, profiles));
+        long currentProfileId = profileService.getProfileIdInPrefs();
+        if (currentProfileId >= 0) {
+            int currentIndex = -1;
+            for (int i = 0; i < profiles.size(); i++) {
+                if (profiles.get(i).getId() == currentProfileId) {
+                    currentIndex = i;
+                    break;
+                }
+            }
+            if (currentIndex >= 0) {
+                binding.profileRv.getRecyclerView().smoothScrollToPosition(currentIndex);
+            }
+        }
     }
 
 

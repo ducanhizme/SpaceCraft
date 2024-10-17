@@ -5,11 +5,13 @@ import android.app.AlertDialog;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.DialogFragment;
 
 import com.example.spacecraft.R;
+import com.example.spacecraft.components.AppToast;
 import com.example.spacecraft.components.GameOverDialog;
 import com.example.spacecraft.components.GameView;
 import com.example.spacecraft.components.ProfileDialog;
@@ -45,17 +47,13 @@ public class GameActivity extends AppCompatActivity implements ProfileDialog.Dia
     private void setInputEvent() {
         binding.pauseBtn.setOnClickListener(v -> togglePause());
 
-        binding.menuBtn.setOnClickListener(v -> {
+        binding.homeBtn.setOnClickListener(v -> {
             gameView.pause();
-            isPaused = true;
-            new AlertDialog.Builder(this)
-                    .setTitle("Game Paused")
-                    .setMessage("Do you want to resume the game?")
-                    .setPositiveButton("Resume", (dialog, which) -> resumeGame())
-                    .show();
+            AppToast.makeText(this,"Saved score", Toast.LENGTH_LONG);
+            finish();
         });
 
-        binding.replayBtn.setOnClickListener(v -> replayGame());
+        binding.replayGameBtn.setOnClickListener(v -> replayGame());
     }
 
     private void togglePause() {
@@ -65,20 +63,15 @@ public class GameActivity extends AppCompatActivity implements ProfileDialog.Dia
             gameView.pause();
         }
         isPaused = !isPaused;
-        binding.pauseBtn.setImageResource(isPaused ? R.drawable.play : R.drawable.pause);
+        binding.pauseBtn.setImageResource(isPaused ? R.drawable.play : R.drawable.baseline_pause_24);
     }
 
-    private void resumeGame() {
-        gameView.resume();
-        isPaused = false;
-        binding.menuBtn.setImageResource(R.drawable.main_menu);
-    }
 
     private void replayGame() {
         isPaused = false;
         gameView.getGameContext().setState(new GamePlayingState(this));
-        binding.pauseBtn.setImageResource(R.drawable.pause);
-        binding.menuBtn.setImageResource(R.drawable.main_menu);
+        binding.pauseBtn.setImageResource(R.drawable.baseline_pause_24);
+        binding.score.setText("0");
     }
 
     private void setView() {
