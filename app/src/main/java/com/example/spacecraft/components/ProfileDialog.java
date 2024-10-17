@@ -1,15 +1,18 @@
 package com.example.spacecraft.components;
 
+import android.app.Dialog;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.Window;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.DialogFragment;
 
+import com.example.spacecraft.R;
 import com.example.spacecraft.databinding.ProfileDialogFragmentBinding;
 
 public class ProfileDialog extends DialogFragment {
@@ -22,6 +25,16 @@ public class ProfileDialog extends DialogFragment {
 
     public ProfileDialog(DialogListener listener) {
         this.listener = listener;
+    }
+    @NonNull
+    @Override
+    public Dialog onCreateDialog(@Nullable Bundle savedInstanceState) {
+        Dialog dialog = super.onCreateDialog(savedInstanceState);
+        if (dialog.getWindow() != null) {
+            dialog.getWindow().requestFeature(Window.FEATURE_NO_TITLE);
+            dialog.getWindow().setBackgroundDrawableResource(android.R.color.transparent);
+        }
+        return dialog;
     }
 
     public static ProfileDialog newInstance(DialogListener listener, String title, String message) {
@@ -43,7 +56,7 @@ public class ProfileDialog extends DialogFragment {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-
+        setStyle(DialogFragment.STYLE_NO_FRAME, R.style.TransparentDialog);
         if (getArguments() != null) {
             String title = getArguments().getString(ARG_TITLE);
             String message = getArguments().getString(ARG_MESSAGE);
@@ -59,10 +72,6 @@ public class ProfileDialog extends DialogFragment {
                 listener.onDialogPositiveClick(profileName);
                 dismiss();
             }
-        });
-
-        binding.cancelProfileBtn.setOnClickListener(v -> {
-            dismiss();
         });
     }
 

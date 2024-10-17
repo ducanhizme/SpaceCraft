@@ -83,17 +83,6 @@
                     android:layout_weight="1"
                     android:layout_marginEnd="10dp"
                     />
-                <androidx.appcompat.widget.AppCompatButton
-                    android:id="@+id/cancelProfileBtn"
-                    android:layout_width="0dp"
-                    android:layout_height="30dp"
-                    android:text="@string/cancel"
-                    android:fontFamily="@font/barcadenobar"
-                    android:textColor="@color/white"
-                    android:background="@drawable/button_border"
-                    android:layout_weight="1"
-                    android:layout_marginStart="10dp"
-                    />
             </LinearLayout>
         </LinearLayout>
     </FrameLayout>

@@ -22,12 +22,12 @@ public class ProfileService {
         sharedPreferences = context.getSharedPreferences("profile", Context.MODE_PRIVATE);
     }
 
-    public long addProfile(Profile profile) {
+    public int addProfile(Profile profile) {
         SQLiteDatabase db = dbHelper.getWritableDatabase();
         ContentValues values = new ContentValues();
         values.put(DatabaseHelper.COLUMN_NAME, profile.getUsername());
         values.put(DatabaseHelper.COLUMN_HIGHEST_SCORE, profile.getHighestScore());
-        long profileId = db.insert(DatabaseHelper.TABLE_NAME, null, values);
+        int profileId = (int) db.insert(DatabaseHelper.TABLE_NAME, null, values);
         db.close();
         return profileId;
     }
@@ -73,7 +73,7 @@ public class ProfileService {
     }
 
     public void updateProfileScore(int newScore) {
-        long profileId = getProfileIdInPrefs();
+        int profileId = getProfileIdInPrefs();
         SQLiteDatabase db = dbHelper.getWritableDatabase();
         String[] columns = {DatabaseHelper.COLUMN_HIGHEST_SCORE};
         String selection = DatabaseHelper.COLUMN_ID + " = ?";
@@ -97,14 +97,14 @@ public class ProfileService {
         db.close();
     }
 
-    public void saveProfileIdToPrefs(long profileId) {
+    public void saveProfileIdToPrefs(int profileId) {
         SharedPreferences.Editor editor = sharedPreferences.edit();
-        editor.putLong(KEY_PROFILE_ID, profileId);
+        editor.putInt(KEY_PROFILE_ID, profileId);
         editor.apply();
     }
 
-    public Long getProfileIdInPrefs() {
-        return sharedPreferences.getLong(KEY_PROFILE_ID, -1);
+    public int getProfileIdInPrefs() {
+        return sharedPreferences.getInt(KEY_PROFILE_ID, -1);
     }
 
     public void clearProfileIdInPrefs() {
@@ -113,5 +113,22 @@ public class ProfileService {
         editor.apply();
     }
 
+
+    public Profile getProfileHaveHighestScores() {
+        SQLiteDatabase db = dbHelper.getReadableDatabase();
+        Profile profile = null;
+        String selectQuery = "SELECT * FROM " + DatabaseHelper.TABLE_NAME + " ORDER BY " + DatabaseHelper.COLUMN_HIGHEST_SCORE + " DESC LIMIT 1";
+
+        try (Cursor cursor = db.rawQuery(selectQuery, null)) {
+            if (cursor != null && cursor.moveToFirst()) {
+                profile = new Profile(
+                        cursor.getLong(cursor.getColumnIndexOrThrow(DatabaseHelper.COLUMN_ID)),
+                        cursor.getString(cursor.getColumnIndexOrThrow(DatabaseHelper.COLUMN_NAME)),
+                        cursor.getInt(cursor.getColumnIndexOrThrow(DatabaseHelper.COLUMN_HIGHEST_SCORE))
+                );
+            }
+        }
+        return profile;
+    }
 
 }

@@ -4,20 +4,20 @@ import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
-import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
-import androidx.annotation.Nullable;
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.spacecraft.adapters.ProfileAdapter;
-import com.example.spacecraft.components.AppToast;
 import com.example.spacecraft.components.GameView;
-import com.example.spacecraft.components.HeightScoreDialog;
+import com.example.spacecraft.components.HighestScoreDialog;
 import com.example.spacecraft.components.ProfileDialog;
 import com.example.spacecraft.databinding.ActivityMainBinding;
 import com.example.spacecraft.models.app.Profile;
 import com.example.spacecraft.services.FirebaseService;
+import com.example.spacecraft.services.GoogleAuthService;
 import com.example.spacecraft.services.ProfileService;
 
 import java.util.List;
@@ -26,9 +26,9 @@ public class MainActivity extends AppCompatActivity {
     private ActivityMainBinding binding;
     private List<Profile> profiles;
     private ProfileService profileService;
-    private FirebaseService firebaseService;
-    private static final int REQ_ONE_TAP = 2;
+    private GoogleAuthService googleAuthService;
     private GameView gameView;
+    private ActivityResultLauncher<Intent> signInLauncher;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -36,10 +36,11 @@ public class MainActivity extends AppCompatActivity {
         EdgeToEdge.enable(this);
         binding = ActivityMainBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
-        firebaseService = new FirebaseService(this);
+        googleAuthService = new GoogleAuthService(this);
         profileService = new ProfileService(this);
         initializeUI();
         loadProfiles();
+        registerSignInLauncher();
     }
 
     private void initializeUI() {
@@ -56,13 +57,12 @@ public class MainActivity extends AppCompatActivity {
     private void setupButtonListeners() {
         binding.playBtn.setOnClickListener(v -> startGameActivity());
         binding.profileBtn.setOnClickListener(v -> showProfileDialog());
-        binding.connectToGlobalBtn.setOnClickListener(v -> firebaseService.signInWithGoogle());
         binding.heightScoreBtn.setOnClickListener(v -> showHeightScoreDialog());
     }
 
     private void showHeightScoreDialog() {
-        HeightScoreDialog dialog = new HeightScoreDialog();
-        dialog.show(getSupportFragmentManager(), HeightScoreDialog.TAG);
+        HighestScoreDialog dialog = new HighestScoreDialog();
+        dialog.show(getSupportFragmentManager(), HighestScoreDialog.TAG);
     }
 
     private void startGameActivity() {
@@ -84,6 +84,7 @@ public class MainActivity extends AppCompatActivity {
 
             }
         }, "Profile", "Enter your new profile name to start new game");
+        dialog.setCancelable(false);
         dialog.show(getSupportFragmentManager(), ProfileDialog.TAG);
     }
 
@@ -92,8 +93,22 @@ public class MainActivity extends AppCompatActivity {
         super.onStart();
         checkCurrentProfile();
         updateProfileAdapter();
-        int currentProfileId = binding.profileRv.getCurrentProfileIndex();
-        profileService.saveProfileIdToPrefs((int)profiles.get(currentProfileId).getId()+1);
+        updateHeightScoreToFirebase();
+        try{
+            int currentProfileId = binding.profileRv.getCurrentProfileIndex();
+            profileService.saveProfileIdToPrefs((int)profiles.get(currentProfileId).getId()+1);
+        }catch (IndexOutOfBoundsException e){
+            Log.d("MainActivity", "onStart: "+e.getMessage());
+        }
+    }
+
+    private void updateHeightScoreToFirebase() {
+        if (googleAuthService.getCurrentUser() != null) {
+            Profile profile = profileService.getProfileHaveHighestScores();
+            if (profile != null) {
+                new FirebaseService().storeGoogleAuthUser(googleAuthService.getCurrentUser(), profile.getHighestScore());
+            }
+        }
     }
 
     private void checkCurrentProfile() {
@@ -104,7 +119,7 @@ public class MainActivity extends AppCompatActivity {
 
     private void createProfile(String inputText) {
         Profile profile = new Profile(inputText, 0);
-        long profileId = profileService.addProfile(profile);
+        int profileId = profileService.addProfile(profile);
         profileService.saveProfileIdToPrefs(profileId);
     }
 
@@ -149,11 +164,14 @@ public class MainActivity extends AppCompatActivity {
         gameView.pause();
     }
 
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-        if (requestCode == 9001) {
-            firebaseService.handleSignInResult(data);
-        }
+    private void registerSignInLauncher() {
+        signInLauncher = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(), result -> {
+            if (result.getResultCode() == RESULT_OK) {
+                googleAuthService.handleSignInResult(result.getData(), () -> {
+                    Log.d("MainActivity", "handleSignInResult: ");
+                });
+            }
+        });
     }
+
 }

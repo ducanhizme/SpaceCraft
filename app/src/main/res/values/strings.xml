@@ -7,7 +7,7 @@
     <string name="exit">Exit</string>
     <string name="ProfileA">ProfileA</string>
     <string name="profilea">ProfileA</string>
-    <string name="highest_score">Highest Score</string>
+    <string name="ranking">Ranking</string>
     <string name="right_arrow">right_arrow</string>
     <string name="left_arrow">left_arrow</string>
     <string name="alert">ALERT</string>
@@ -23,4 +23,7 @@
     <string name="default_score">100</string>
     <string name="connect_to_global">Connect to Global</string>
     <string name="back">Back</string>
+    <string name="profile_name">Profile name</string>
+    <string name="_1">1</string>
+    <string name="you_did_nt_connect_to_global_competition_yet">You did\'nt connect to global competition yet</string>
 </resources>

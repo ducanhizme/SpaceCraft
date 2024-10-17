@@ -17,6 +17,9 @@ import com.example.spacecraft.components.GameOverDialog;
 import com.example.spacecraft.components.GameView;
 import com.example.spacecraft.components.ProfileDialog;
 import com.example.spacecraft.databinding.ActivityGameBinding;
+import com.example.spacecraft.models.app.Profile;
+import com.example.spacecraft.services.FirebaseService;
+import com.example.spacecraft.services.GoogleAuthService;
 import com.example.spacecraft.services.ProfileService;
 import com.example.spacecraft.state.GamePlayingState;
 import com.example.spacecraft.utils.Constants;
@@ -44,7 +47,6 @@ public class GameActivity extends AppCompatActivity implements ProfileDialog.Dia
     protected void onStart() {
         super.onStart();
         profileService = new ProfileService(this);
-        Log.d("GameActivity", "onCreate: "+profileService.getProfileIdInPrefs());
     }
 
     private void setInputEvent() {
@@ -110,6 +112,13 @@ public class GameActivity extends AppCompatActivity implements ProfileDialog.Dia
 
     @Override
     public void onDialogPositiveClick(String inputText) {
+        FirebaseService firebaseService = new FirebaseService();
+        GoogleAuthService googleAuthService = new GoogleAuthService(this);
+        if (googleAuthService.getCurrentUser() != null) {
+            if (profileService.getProfileHaveHighestScores().getHighestScore() < Integer.parseInt(inputText)) {
+                firebaseService.storeGoogleAuthUser(googleAuthService.getCurrentUser(), Integer.parseInt(inputText));
+            }
+        }
         profileService.updateProfileScore(Integer.parseInt(inputText));
         finish();
     }

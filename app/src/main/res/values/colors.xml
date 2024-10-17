@@ -4,4 +4,7 @@
     <color name="white">#FFFFFFFF</color>
     <color name="glass">#0C070707</color>
     <color name="toastBackground">#2e3157</color>
+    <color name="gold">#FFD700</color>
+    <color name="silver">#C0C0C0</color>
+    <color name="bronze">#CD7F32</color>
 </resources>
