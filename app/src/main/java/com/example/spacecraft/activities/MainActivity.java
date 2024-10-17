@@ -3,15 +3,21 @@ package com.example.spacecraft.activities;
 import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
+import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.spacecraft.adapters.ProfileAdapter;
+import com.example.spacecraft.components.AppToast;
 import com.example.spacecraft.components.GameView;
+import com.example.spacecraft.components.HeightScoreDialog;
 import com.example.spacecraft.components.ProfileDialog;
 import com.example.spacecraft.databinding.ActivityMainBinding;
 import com.example.spacecraft.models.app.Profile;
+import com.example.spacecraft.services.FirebaseService;
 import com.example.spacecraft.services.ProfileService;
 
 import java.util.List;
@@ -20,7 +26,8 @@ public class MainActivity extends AppCompatActivity {
     private ActivityMainBinding binding;
     private List<Profile> profiles;
     private ProfileService profileService;
-    private ProfileDialog dialog;
+    private FirebaseService firebaseService;
+    private static final int REQ_ONE_TAP = 2;
     private GameView gameView;
 
     @Override
@@ -29,97 +36,106 @@ public class MainActivity extends AppCompatActivity {
         EdgeToEdge.enable(this);
         binding = ActivityMainBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
-        setInputUser();
-        setView();
+        firebaseService = new FirebaseService(this);
+        profileService = new ProfileService(this);
+        initializeUI();
+        loadProfiles();
     }
 
-    private void setView() {
+    private void initializeUI() {
+        setupGameView();
+        setupButtonListeners();
+    }
+
+    private void setupGameView() {
         gameView = new GameView(this);
         binding.main.addView(gameView, 0);
     }
 
     @SuppressLint("SetTextI18n")
-    private void setInputUser() {
-        binding.playBtn.setOnClickListener(v -> {
-            startActivity();
-            overridePendingTransition(0, 0);
-        });
-
-        binding.profileBtn.setOnClickListener(v -> {
-            ProfileDialog dialog = ProfileDialog.newInstance(new ProfileDialog.DialogListener() {
-                @Override
-                public void onDialogPositiveClick(String inputText) {
-                    createProfile(inputText);
-                    profiles = profileService.getAllProfiles();
-                    setAdapter();
-                }
-
-                @Override
-                public void onDialogNegativeClick() {
-
-                }
-            }, "Profile", "Enter your new profile name to start new game");
-            dialog.show(getSupportFragmentManager(), ProfileDialog.TAG);
-
-
-        });
+    private void setupButtonListeners() {
+        binding.playBtn.setOnClickListener(v -> startGameActivity());
+        binding.profileBtn.setOnClickListener(v -> showProfileDialog());
+        binding.connectToGlobalBtn.setOnClickListener(v -> firebaseService.signInWithGoogle());
+        binding.heightScoreBtn.setOnClickListener(v -> showHeightScoreDialog());
     }
 
-    private void startActivity() {
-        Intent i = new Intent(this, GameActivity.class);
-        startActivity(i);
+    private void showHeightScoreDialog() {
+        HeightScoreDialog dialog = new HeightScoreDialog();
+        dialog.show(getSupportFragmentManager(), HeightScoreDialog.TAG);
     }
 
+    private void startGameActivity() {
+        Intent intent = new Intent(this, GameActivity.class);
+        startActivity(intent);
+        overridePendingTransition(0, 0);
+    }
+
+    private void showProfileDialog() {
+        ProfileDialog dialog = ProfileDialog.newInstance(new ProfileDialog.DialogListener() {
+            @Override
+            public void onDialogPositiveClick(String inputText) {
+                createProfile(inputText);
+                updateProfileAdapter();
+            }
+
+            @Override
+            public void onDialogNegativeClick() {
+
+            }
+        }, "Profile", "Enter your new profile name to start new game");
+        dialog.show(getSupportFragmentManager(), ProfileDialog.TAG);
+    }
+
+    @Override
     protected void onStart() {
         super.onStart();
-        profileService = new ProfileService(this);
-        profiles = profileService.getAllProfiles();
-        setAdapter();
-        int currentProfileId = binding.profileRv.getCurrentProfileIndex();
-        profileService.saveProfileIdToPrefs((int)profiles.get(currentProfileId).getId());
         checkCurrentProfile();
+        updateProfileAdapter();
+        int currentProfileId = binding.profileRv.getCurrentProfileIndex();
+        profileService.saveProfileIdToPrefs((int)profiles.get(currentProfileId).getId()+1);
     }
 
     private void checkCurrentProfile() {
         if (profileService.getProfileIdInPrefs() < 0) {
-            dialog = new ProfileDialog(new ProfileDialog.DialogListener() {
-                @Override
-                public void onDialogPositiveClick(String inputText) {
-                    createProfile(inputText);
-                }
-
-                @Override
-                public void onDialogNegativeClick() {
-
-                }
-            });
-            dialog.show(getSupportFragmentManager(), ProfileDialog.TAG);
+            showProfileDialog();
         }
     }
 
-    private void createProfile(String inputText){
+    private void createProfile(String inputText) {
         Profile profile = new Profile(inputText, 0);
         long profileId = profileService.addProfile(profile);
         profileService.saveProfileIdToPrefs(profileId);
     }
 
-    private void setAdapter() {
+    private void updateProfileAdapter() {
+        profiles = profileService.getAllProfiles();
         binding.profileRv.setAdapter(new ProfileAdapter(this, profiles));
+        scrollToCurrentProfile();
+    }
+
+    private void scrollToCurrentProfile() {
         long currentProfileId = profileService.getProfileIdInPrefs();
         if (currentProfileId >= 0) {
-            int currentIndex = -1;
-            for (int i = 0; i < profiles.size(); i++) {
-                if (profiles.get(i).getId() == currentProfileId) {
-                    currentIndex = i;
-                    break;
-                }
-            }
+            int currentIndex = findProfileIndexById(currentProfileId);
             if (currentIndex >= 0) {
-                binding.profileRv.getRecyclerView().smoothScrollToPosition(currentIndex);
+                binding.profileRv.getRecyclerView().scrollToPosition(currentIndex);
             }
         }
     }
 
+    private int findProfileIndexById(long profileId) {
+        for (int i = 0; i < profiles.size(); i++) {
+            if (profiles.get(i).getId() == profileId) {
+                return i;
+            }
+        }
+        return -1;
+    }
+
+    private void loadProfiles() {
+        profiles = profileService.getAllProfiles();
+    }
 
     @Override
     protected void onResume() {
@@ -133,11 +149,11 @@ public class MainActivity extends AppCompatActivity {
         gameView.pause();
     }
 
-    public GameView getGameView() {
-        return this.gameView;
-    }
-
-    public ActivityMainBinding getBinding(){
-        return this.binding;
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == 9001) {
+            firebaseService.handleSignInResult(data);
+        }
     }
 }

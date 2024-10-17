@@ -2,6 +2,7 @@ package com.example.spacecraft.activities;
 
 import android.os.Bundle;
 import android.app.AlertDialog;
+import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -30,6 +31,7 @@ public class GameActivity extends AppCompatActivity implements ProfileDialog.Dia
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
         binding = ActivityGameBinding.inflate(getLayoutInflater());
         View decorView = getWindow().getDecorView();
         decorView.setSystemUiVisibility(View.SYSTEM_UI_FLAG_FULLSCREEN | View.SYSTEM_UI_FLAG_HIDE_NAVIGATION | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY);
@@ -42,6 +44,7 @@ public class GameActivity extends AppCompatActivity implements ProfileDialog.Dia
     protected void onStart() {
         super.onStart();
         profileService = new ProfileService(this);
+        Log.d("GameActivity", "onCreate: "+profileService.getProfileIdInPrefs());
     }
 
     private void setInputEvent() {

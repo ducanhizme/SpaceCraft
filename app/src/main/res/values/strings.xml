@@ -1,4 +1,5 @@
 <resources>
+    <string name="default_web_client_id">113251474596-tfi576tt2hf7i6bcs0ahks019l451alq.apps.googleusercontent.com</string>
     <string name="app_name">SpaceCraft</string>
     <string name="game">SpaceCraft</string>
     <string name="play">Play</string>
@@ -17,8 +18,9 @@
     <string name="_0">0</string>
     <string name="score">Score: </string>
     <string name="game_over">Game Over</string>
-    <string name="height_score">Height Score:</string>
+    <string name="height_score">Height Score</string>
     <string name="replay">Replay</string>
     <string name="default_score">100</string>
     <string name="connect_to_global">Connect to Global</string>
+    <string name="back">Back</string>
 </resources>
