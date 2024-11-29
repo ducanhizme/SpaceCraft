@@ -56,7 +56,7 @@ public class MainActivity extends AppCompatActivity {
     @SuppressLint("SetTextI18n")
     private void setupButtonListeners() {
         binding.playBtn.setOnClickListener(v -> startGameActivity());
-        binding.profileBtn.setOnClickListener(v -> showProfileDialog());
+        binding.profileBtn.setOnClickListener(v -> showProfileDialog(true));
         binding.heightScoreBtn.setOnClickListener(v -> showHeightScoreDialog());
     }
 
@@ -71,7 +71,7 @@ public class MainActivity extends AppCompatActivity {
         overridePendingTransition(0, 0);
     }
 
-    private void showProfileDialog() {
+    private void showProfileDialog(boolean isCancelable) {
         ProfileDialog dialog = ProfileDialog.newInstance(new ProfileDialog.DialogListener() {
             @Override
             public void onDialogPositiveClick(String inputText) {
@@ -84,7 +84,7 @@ public class MainActivity extends AppCompatActivity {
 
             }
         }, "Profile", "Enter your new profile name to start new game");
-        dialog.setCancelable(false);
+        dialog.setCancelable(isCancelable);
         dialog.show(getSupportFragmentManager(), ProfileDialog.TAG);
     }
 
@@ -113,7 +113,7 @@ public class MainActivity extends AppCompatActivity {
 
     private void checkCurrentProfile() {
         if (profileService.getProfileIdInPrefs() < 0) {
-            showProfileDialog();
+            showProfileDialog(false);
         }
     }
 

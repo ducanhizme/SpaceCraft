@@ -8,6 +8,8 @@ import android.graphics.Paint;
 import android.graphics.Point;
 import android.graphics.Rect;
 
+import com.example.spacecraft.utils.Constants;
+
 public class Explosion {
     private final Bitmap spriteSheet;
     private final int frameWidth;
@@ -23,7 +25,7 @@ public class Explosion {
         this.spriteSheet = BitmapFactory.decodeResource(res, drawable);
         this.point = point;
         this.frameHeight = frameHeight;
-        this.frameWidth = spriteSheet.getWidth() / 8;
+        this.frameWidth = spriteSheet.getWidth() / Constants.COL_EXPLOSION;
         this.frameCount = 8;
         this.frameTime = frameTime;
         this.frameTimer = 0;
@@ -44,7 +46,7 @@ public class Explosion {
     public void update() {
         if (!isFinished) {
             frameTimer++;
-            if (frameTimer >= frameTime) {
+            if (frameTimer >= frameTime / 4) {
                 frameTimer = 0;
                 currentFrame++;
                 if (currentFrame >= frameCount) {

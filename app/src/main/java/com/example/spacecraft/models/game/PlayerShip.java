@@ -9,10 +9,8 @@ import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
-import com.example.spacecraft.R;
 import com.example.spacecraft.base.GameObject;
 import com.example.spacecraft.utils.Constants;
-
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
 

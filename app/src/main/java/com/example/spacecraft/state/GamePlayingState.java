@@ -41,7 +41,7 @@ public class GamePlayingState implements GameState {
         this.enemies = new ArrayList<>();
         this.explosions = new ArrayList<>();
         this.enemiesDestroyed = 0;
-        this.enemyCount = 3;
+        this.enemyCount = Constants.DEFAULT_GENERATE_ENEMY;
         this.random = new Random();
         DeadNotifier deadNotifier = new DeadNotifier(playerShip, context);
         Log.d("GamePlayingState", "PlayerShipHealth: " + playerShip.getHealth());

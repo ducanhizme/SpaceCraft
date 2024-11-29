@@ -19,6 +19,8 @@ public class Constants {
     public static int ENEMY_SHIP_NORMAL_HEALTH = 3;
     public static int ENEMY_SHIP_FAST_HEALTH = 2;
     public static int ENEMY_SHIP_TANK_HEALTH = 5;
-
+    public static int COL_EXPLOSION = 9;
+    public static int EXPLOSION_FRAME_TIME = 40000;
+    public static int DEFAULT_GENERATE_ENEMY = 3;
 
 }
