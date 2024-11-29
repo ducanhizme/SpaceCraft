@@ -91,5 +91,15 @@
             android:text="@string/exit"
             android:textColor="@color/white"
             android:textSize="25sp" />
+        <androidx.appcompat.widget.AppCompatButton
+            android:id="@+id/finalExamBtn"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="20dp"
+            android:background="@drawable/button_border"
+            android:fontFamily="@font/barcadebobarbold"
+            android:text="@string/final_exam"
+            android:textColor="@color/white"
+            android:textSize="25sp" />
     </LinearLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>
