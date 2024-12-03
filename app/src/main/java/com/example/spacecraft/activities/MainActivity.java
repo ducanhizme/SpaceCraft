@@ -58,6 +58,7 @@ public class MainActivity extends AppCompatActivity {
         binding.playBtn.setOnClickListener(v -> startGameActivity());
         binding.profileBtn.setOnClickListener(v -> showProfileDialog(true));
         binding.heightScoreBtn.setOnClickListener(v -> showHeightScoreDialog());
+        binding.studentBtn.setOnClickListener(v->startActivity(new Intent(this, AddStudentsActivity.class)));
     }
 
     private void showHeightScoreDialog() {

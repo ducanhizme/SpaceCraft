@@ -3,6 +3,7 @@ package com.example.spacecraft.services;
 import androidx.annotation.NonNull;
 
 import com.example.spacecraft.models.app.Profile;
+import com.example.spacecraft.models.app.Student;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -23,6 +24,14 @@ public class FirebaseService {
     public void storeGoogleAuthUser(FirebaseUser user,int highestScore) {
         firebaseDatabase.getReference("users").child(user.getUid()).child("username").setValue(user.getDisplayName());
         firebaseDatabase.getReference("users").child(user.getUid()).child("highestScore").setValue(highestScore);
+    }
+
+    public com.google.android.gms.tasks.Task<Void> storeStudent(Student student){
+        return firebaseDatabase.getReference("students").child(student.getId()).setValue(student);
+    }
+
+    public void getStudentsFromFirebase(ValueEventListener listener){
+        firebaseDatabase.getReference("students").addValueEventListener(listener);
     }
 
     public Query getRankingOnFirebase(){
