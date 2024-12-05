@@ -2,6 +2,10 @@ package com.example.spacecraft.activities;
 
 import android.annotation.SuppressLint;
 import android.content.Intent;
+import android.hardware.Sensor;
+import android.hardware.SensorEvent;
+import android.hardware.SensorEventListener;
+import android.hardware.SensorManager;
 import android.os.Bundle;
 import android.util.Log;
 
@@ -15,6 +19,7 @@ import com.example.spacecraft.components.GameView;
 import com.example.spacecraft.components.HighestScoreDialog;
 import com.example.spacecraft.components.ProfileDialog;
 import com.example.spacecraft.databinding.ActivityMainBinding;
+import com.example.spacecraft.models.app.GyroParameter;
 import com.example.spacecraft.models.app.Profile;
 import com.example.spacecraft.services.FirebaseService;
 import com.example.spacecraft.services.GoogleAuthService;
@@ -22,13 +27,15 @@ import com.example.spacecraft.services.ProfileService;
 
 import java.util.List;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements SensorEventListener {
     private ActivityMainBinding binding;
     private List<Profile> profiles;
     private ProfileService profileService;
     private GoogleAuthService googleAuthService;
     private GameView gameView;
     private ActivityResultLauncher<Intent> signInLauncher;
+    private SensorManager sensorManager;
+    private Sensor gyroscopeSensor;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -36,6 +43,8 @@ public class MainActivity extends AppCompatActivity {
         EdgeToEdge.enable(this);
         binding = ActivityMainBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
+        sensorManager = (SensorManager) getSystemService(SENSOR_SERVICE);
+        gyroscopeSensor = sensorManager.getDefaultSensor(Sensor.TYPE_GYROSCOPE);
         googleAuthService = new GoogleAuthService(this);
         profileService = new ProfileService(this);
         initializeUI();
@@ -156,12 +165,18 @@ public class MainActivity extends AppCompatActivity {
     protected void onResume() {
         super.onResume();
         gameView.resume();
+        if (gyroscopeSensor != null) {
+            sensorManager.registerListener(this, gyroscopeSensor, SensorManager.SENSOR_DELAY_NORMAL);
+        }
     }
 
     @Override
     protected void onPause() {
         super.onPause();
         gameView.pause();
+        if (gyroscopeSensor != null) {
+            sensorManager.unregisterListener(this);
+        }
     }
 
     private void registerSignInLauncher() {
@@ -173,5 +188,26 @@ public class MainActivity extends AppCompatActivity {
             }
         });
     }
+
+    @Override
+    public void onSensorChanged(SensorEvent event) {
+        if (event.sensor.getType() == Sensor.TYPE_GYROSCOPE) {
+            float rotationRateX = event.values[0];
+            float rotationRateY = event.values[1];
+            float rotationRateZ = event.values[2];
+            if(rotationRateX !=0 && rotationRateY !=0&& rotationRateZ !=0){
+                GyroParameter gyroParameter = new GyroParameter(rotationRateX, rotationRateY, rotationRateZ);
+                Intent intent = new Intent(this, FinalActivity.class);
+                intent.putExtra(GyroParameter.TAG, gyroParameter);
+                startActivity(intent);
+            }
+        }
+    }
+
+    @Override
+    public void onAccuracyChanged(Sensor sensor, int accuracy) {
+
+    }
+
 
 }

@@ -16,4 +16,8 @@ public class CommonHelper {
         }
         return point;
     }
+
+    public static String generateUUID(){
+        return java.util.UUID.randomUUID().toString();
+    }
 }

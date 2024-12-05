@@ -26,4 +26,11 @@
     <string name="profile_name">Profile name</string>
     <string name="_1">1</string>
     <string name="you_did_nt_connect_to_global_competition_yet">You did\'nt connect to global competition yet</string>
+    <string name="enter_title">Enter Title</string>
+    <string name="parameters">Parameters:</string>
+    <string name="x">X:</string>
+    <string name="_0_0">0.0</string>
+    <string name="y">Y:</string>
+    <string name="zero">0.0</string>
+    <string name="z">Z:</string>
 </resources>

@@ -2,6 +2,7 @@ package com.example.spacecraft.services;
 
 import androidx.annotation.NonNull;
 
+import com.example.spacecraft.models.app.GyroParameter;
 import com.example.spacecraft.models.app.Profile;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
@@ -16,16 +17,25 @@ import java.util.Objects;
 
 public class FirebaseService {
     private FirebaseDatabase firebaseDatabase;
+
     public FirebaseService() {
         firebaseDatabase = FirebaseDatabase.getInstance();
     }
 
-    public void storeGoogleAuthUser(FirebaseUser user,int highestScore) {
+    public void storeGoogleAuthUser(FirebaseUser user, int highestScore) {
         firebaseDatabase.getReference("users").child(user.getUid()).child("username").setValue(user.getDisplayName());
         firebaseDatabase.getReference("users").child(user.getUid()).child("highestScore").setValue(highestScore);
     }
 
-    public Query getRankingOnFirebase(){
+    public Query getRankingOnFirebase() {
         return firebaseDatabase.getReference("users").orderByChild("highestScore");
+    }
+
+    public com.google.android.gms.tasks.Task<Void> storeGyroParameter(GyroParameter gyroParameter) {
+        return firebaseDatabase.getReference(GyroParameter.TAG).child(gyroParameter.getId()).setValue(gyroParameter);
+    }
+
+    public void getGyroParametersFromFirebase(ValueEventListener valueEventListener) {
+        firebaseDatabase.getReference(GyroParameter.TAG).addValueEventListener(valueEventListener);
     }
 }
