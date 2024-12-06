@@ -53,13 +53,13 @@ public class DetailActivity extends AppCompatActivity {
                 new FirebaseService().storeProfile(profile).addOnSuccessListener(new OnSuccessListener<Void>() {
                     @Override
                     public void onSuccess(Void unused) {
-                        Toast.makeText(DetailActivity.this, "Da luu", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(DetailActivity.this, "Saved", Toast.LENGTH_SHORT).show();
                     }
                 });
             }catch(NullPointerException e){
-                Toast.makeText(this, "Hay dien day du", Toast.LENGTH_SHORT).show();
+                Toast.makeText(this, "Please provide full information", Toast.LENGTH_SHORT).show();
             }catch (Exception e){
-                Toast.makeText(this, "Da co loi xay ra", Toast.LENGTH_SHORT).show();
+                Toast.makeText(this, "Something went wrong", Toast.LENGTH_SHORT).show();
             }
 
         });
