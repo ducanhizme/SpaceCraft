@@ -11,6 +11,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.spacecraft.R;
 import com.example.spacecraft.activities.DetailActivity;
+import com.example.spacecraft.activities.InformationActivity;
 import com.example.spacecraft.databinding.ItemHighestScoreBinding;
 import com.example.spacecraft.models.app.Profile;
 
@@ -58,7 +59,9 @@ public class HighestScoreAdapter extends RecyclerView.Adapter<HighestScoreAdapte
                     .setTitle("Choose an action")
                     .setMessage("Would you like to view details or edit?")
                     .setPositiveButton("Detail", (dialog, which) -> {
-                        // Code to navigate to Detail screen
+                        Intent intent = new Intent(holder.itemView.getContext(), InformationActivity.class);
+                        intent.putExtra("profile", profile);
+                        holder.itemView.getContext().startActivity(intent);
                     })
                     .setNegativeButton("Edit", (dialog, which) -> {
                         Intent intent = new Intent(holder.itemView.getContext(), DetailActivity.class);
