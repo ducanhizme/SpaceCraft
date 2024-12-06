@@ -1,5 +1,7 @@
 package com.example.spacecraft.adapters;
 
+import android.app.AlertDialog;
+import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -8,6 +10,7 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.spacecraft.R;
+import com.example.spacecraft.activities.DetailActivity;
 import com.example.spacecraft.databinding.ItemHighestScoreBinding;
 import com.example.spacecraft.models.app.Profile;
 
@@ -50,6 +53,20 @@ public class HighestScoreAdapter extends RecyclerView.Adapter<HighestScoreAdapte
                 break;
         }
         holder.binding.positionTv.setTextColor(color);
+        holder.binding.getRoot().setOnClickListener(v -> {
+            new AlertDialog.Builder(holder.itemView.getContext())
+                    .setTitle("Choose an action")
+                    .setMessage("Would you like to view details or edit?")
+                    .setPositiveButton("Detail", (dialog, which) -> {
+                        // Code to navigate to Detail screen
+                    })
+                    .setNegativeButton("Edit", (dialog, which) -> {
+                        Intent intent = new Intent(holder.itemView.getContext(), DetailActivity.class);
+                        intent.putExtra("profile", profile);
+                        holder.itemView.getContext().startActivity(intent);
+                    })
+                    .show();
+        });
     }
 
     @Override
@@ -65,4 +82,6 @@ public class HighestScoreAdapter extends RecyclerView.Adapter<HighestScoreAdapte
             this.binding = binding;
         }
     }
+
+
 }

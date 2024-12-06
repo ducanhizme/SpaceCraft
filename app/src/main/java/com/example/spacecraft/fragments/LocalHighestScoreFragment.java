@@ -1,6 +1,7 @@
 package com.example.spacecraft.fragments;
 
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -13,8 +14,13 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import com.example.spacecraft.adapters.HighestScoreAdapter;
 import com.example.spacecraft.databinding.LocalHighestScoreFragmentBinding;
 import com.example.spacecraft.models.app.Profile;
+import com.example.spacecraft.services.FirebaseService;
 import com.example.spacecraft.services.ProfileService;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.ValueEventListener;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -43,10 +49,21 @@ public class LocalHighestScoreFragment extends Fragment {
     }
 
     private void initializeUI() {
-        List<Profile> profiles = profileService.getAllProfiles().stream()
-                .sorted((p1, p2) -> Integer.compare(p2.getHighestScore(), p1.getHighestScore()))
-                .collect(Collectors.toList());
-        binding.localHighestScoreRv.setLayoutManager(new LinearLayoutManager(getContext()));
-        binding.localHighestScoreRv.setAdapter(new HighestScoreAdapter(profiles));
+        new FirebaseService().getProfileOnFirebase().addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                List<Profile> profiles = new ArrayList<>();
+                for (DataSnapshot dataSnapshot : snapshot.getChildren()) {
+                    Profile profile = dataSnapshot.getValue(Profile.class);
+                    profiles.add(profile);
+                }
+                binding.localHighestScoreRv.setLayoutManager(new LinearLayoutManager(getContext()));
+                binding.localHighestScoreRv.setAdapter(new HighestScoreAdapter(profiles));
+            }
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+                Log.e(TAG, "onCancelled: ", error.toException());
+            }
+        });
     }
 }

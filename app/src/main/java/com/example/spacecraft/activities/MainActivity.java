@@ -4,6 +4,7 @@ import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.View;
 
 import androidx.activity.EdgeToEdge;
 import androidx.activity.result.ActivityResultLauncher;
@@ -58,6 +59,12 @@ public class MainActivity extends AppCompatActivity {
         binding.playBtn.setOnClickListener(v -> startGameActivity());
         binding.profileBtn.setOnClickListener(v -> showProfileDialog(true));
         binding.heightScoreBtn.setOnClickListener(v -> showHeightScoreDialog());
+        binding.btnExit.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startActivity(new Intent(MainActivity.this,DetailActivity.class));
+            }
+        });
     }
 
     private void showHeightScoreDialog() {
@@ -96,7 +103,7 @@ public class MainActivity extends AppCompatActivity {
         updateHeightScoreToFirebase();
         try{
             int currentProfileId = binding.profileRv.getCurrentProfileIndex();
-            profileService.saveProfileIdToPrefs((int)profiles.get(currentProfileId).getId()+1);
+            profileService.saveProfileIdToPrefs((int)profiles.get(currentProfileId).getIdLocal()+1);
         }catch (IndexOutOfBoundsException e){
             Log.d("MainActivity", "onStart: "+e.getMessage());
         }
@@ -141,7 +148,7 @@ public class MainActivity extends AppCompatActivity {
 
     private int findProfileIndexById(long profileId) {
         for (int i = 0; i < profiles.size(); i++) {
-            if (profiles.get(i).getId() == profileId) {
+            if (profiles.get(i).getIdLocal() == profileId) {
                 return i;
             }
         }
