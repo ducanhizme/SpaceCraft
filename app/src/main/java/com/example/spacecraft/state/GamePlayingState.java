@@ -41,7 +41,8 @@ public class GamePlayingState implements GameState {
         this.enemies = new ArrayList<>();
         this.explosions = new ArrayList<>();
         this.enemiesDestroyed = 0;
-        this.enemyCount = Constants.DEFAULT_GENERATE_ENEMY;
+        // Use numberOfEnemies from Constants, which is now set by difficulty
+        this.enemyCount = Constants.numberOfEnemies;
         this.random = new Random();
         DeadNotifier deadNotifier = new DeadNotifier(playerShip, context);
         Log.d("GamePlayingState", "PlayerShipHealth: " + playerShip.getHealth());
@@ -107,18 +108,20 @@ public class GamePlayingState implements GameState {
         switch (enemyType) {
             case 0:
                 enemyShip = gameCharacterService.createEnemyShip(new Point(x,y), Constants.ENEMY_SHIP_NORMAL);
-                enemyShip.setHealth(Constants.ENEMY_SHIP_NORMAL_HEALTH);
+                enemyShip.setHealth(Constants.enemyNormalHealth); // Use new constant
+                enemyShip.setSpeed(Constants.enemyNormalSpeed);   // Use new constant
                 enemyShip.setScore(10);
                 break;
             case 1:
                 enemyShip = gameCharacterService.createEnemyShip(new Point(x,y),Constants.ENEMY_SHIP_FAST);
-                enemyShip.setHealth(Constants.ENEMY_SHIP_FAST_HEALTH);
-                enemyShip.setSpeed(30);
+                enemyShip.setHealth(Constants.enemyFastHealth);   // Use new constant
+                enemyShip.setSpeed(Constants.enemyFastSpeed);     // Use new constant
                 enemyShip.setScore(20);
                 break;
             case 2:
                 enemyShip = gameCharacterService.createEnemyShip(new Point(x,y),Constants.ENEMY_SHIP_TANK);
-                enemyShip.setHealth(Constants.ENEMY_SHIP_TANK_HEALTH);
+                enemyShip.setHealth(Constants.enemyTankHealth);   // Use new constant
+                enemyShip.setSpeed(Constants.enemyTankSpeed);     // Use new constant
                 enemyShip.setScore(30);
                 break;
         }

@@ -83,6 +83,17 @@
             android:textSize="25sp" />
 
         <androidx.appcompat.widget.AppCompatButton
+            android:id="@+id/difficultyBtn"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="20dp"
+            android:background="@drawable/button_border"
+            android:fontFamily="@font/barcadebobarbold"
+            android:text="Difficulty"
+            android:textColor="@color/white"
+            android:textSize="25sp" />
+
+        <androidx.appcompat.widget.AppCompatButton
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="20dp"

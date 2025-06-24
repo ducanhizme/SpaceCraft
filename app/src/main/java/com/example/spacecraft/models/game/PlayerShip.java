@@ -43,7 +43,8 @@ public PlayerShip(float screenWidth, float screenHeight, SensorManager sensorMan
      */
     public void shoot() {
         long currentTime = System.currentTimeMillis();
-        if (currentTime - lastShotTime >= 500) {
+        // Use playerFiringRate from Constants, which is now set by difficulty
+        if (currentTime - lastShotTime >= Constants.playerFiringRate) {
             Bullet bullet = new Bullet(getScreenWidth(), getScreenHeight(), getRes(), Constants.BULLET, getScreenRatioX(), getScreenRatioY());
             bullet.setPoint(new Point(getPoint().x + getWIDTH() / 2 + bullet.getWIDTH() / 2, getPoint().y - getHEIGHT() / 2));
             bullets.add(bullet);
