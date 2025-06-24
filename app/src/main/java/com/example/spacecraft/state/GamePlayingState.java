@@ -12,10 +12,12 @@ import com.example.spacecraft.models.game.Bullet;
 import com.example.spacecraft.models.game.EnemyShip;
 import com.example.spacecraft.models.game.Explosion;
 import com.example.spacecraft.notifier.DeadNotifier;
+import com.example.spacecraft.services.DifficultyManager;
 import com.example.spacecraft.utils.BackgroundManager;
 import com.example.spacecraft.models.game.PlayerShip;
 import com.example.spacecraft.services.GameCharacterService;
 import com.example.spacecraft.utils.Constants;
+import com.example.spacecraft.utils.Difficulty;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -32,19 +34,42 @@ public class GamePlayingState implements GameState {
     private final Random random;
     private final GameCharacterService gameCharacterService;
     private final Context context;
+    private final DifficultyManager difficultyManager;
+    private final Difficulty currentDifficulty;
 
     public GamePlayingState(Context context) {
         this.gameCharacterService = new GameCharacterService(context);
         this.context = context;
+        this.difficultyManager = new DifficultyManager(context);
+        this.currentDifficulty = difficultyManager.loadDifficulty();
         this.backgroundManager = gameCharacterService.defaultBackgroundManager();
         this.playerShip = gameCharacterService.defaultPlayerShip();
         this.enemies = new ArrayList<>();
         this.explosions = new ArrayList<>();
         this.enemiesDestroyed = 0;
-        this.enemyCount = Constants.DEFAULT_GENERATE_ENEMY;
+        //this.enemyCount = Constants.DEFAULT_GENERATE_ENEMY; // Will be set based on difficulty
         this.random = new Random();
+
+        DifficultyManager difficultyManager = new DifficultyManager(context);
+        Difficulty currentDifficulty = difficultyManager.loadDifficulty();
+
+        switch (currentDifficulty) {
+            case EASY:
+                this.enemyCount = Math.max(1, Constants.DEFAULT_GENERATE_ENEMY - 1);
+                break;
+            case MEDIUM:
+                this.enemyCount = Constants.DEFAULT_GENERATE_ENEMY;
+                break;
+            case HARD:
+                this.enemyCount = Constants.DEFAULT_GENERATE_ENEMY + 2;
+                break;
+            default:
+                this.enemyCount = Constants.DEFAULT_GENERATE_ENEMY;
+                break;
+        }
+
         DeadNotifier deadNotifier = new DeadNotifier(playerShip, context);
-        Log.d("GamePlayingState", "PlayerShipHealth: " + playerShip.getHealth());
+        Log.d("GamePlayingState", "PlayerShipHealth: " + playerShip.getHealth() + ", Initial EnemyCount: " + this.enemyCount);
         initializeEnemies();
     }
 
@@ -104,25 +129,61 @@ public class GamePlayingState implements GameState {
     private void createEnemyShip(int x, int y) {
         EnemyShip enemyShip = null;
         int enemyType = random.nextInt(3);
+
+        int baseHealth;
+        int baseSpeed; // Default speed is 20 from GameObject
+        int score;
+        int drawable;
+
         switch (enemyType) {
-            case 0:
-                enemyShip = gameCharacterService.createEnemyShip(new Point(x,y), Constants.ENEMY_SHIP_NORMAL);
-                enemyShip.setHealth(Constants.ENEMY_SHIP_NORMAL_HEALTH);
-                enemyShip.setScore(10);
+            case 0: // NORMAL
+                baseHealth = Constants.ENEMY_SHIP_NORMAL_HEALTH;
+                baseSpeed = 20; // Default GameObject speed
+                score = 10;
+                drawable = Constants.ENEMY_SHIP_NORMAL;
                 break;
-            case 1:
-                enemyShip = gameCharacterService.createEnemyShip(new Point(x,y),Constants.ENEMY_SHIP_FAST);
-                enemyShip.setHealth(Constants.ENEMY_SHIP_FAST_HEALTH);
-                enemyShip.setSpeed(30);
-                enemyShip.setScore(20);
+            case 1: // FAST
+                baseHealth = Constants.ENEMY_SHIP_FAST_HEALTH;
+                baseSpeed = 30; // Specific speed for fast ship
+                score = 20;
+                drawable = Constants.ENEMY_SHIP_FAST;
                 break;
-            case 2:
-                enemyShip = gameCharacterService.createEnemyShip(new Point(x,y),Constants.ENEMY_SHIP_TANK);
-                enemyShip.setHealth(Constants.ENEMY_SHIP_TANK_HEALTH);
-                enemyShip.setScore(30);
+            case 2: // TANK
+            default: // Should not happen with random.nextInt(3) but good practice
+                baseHealth = Constants.ENEMY_SHIP_TANK_HEALTH;
+                baseSpeed = 20; // Default GameObject speed
+                score = 30;
+                drawable = Constants.ENEMY_SHIP_TANK;
                 break;
         }
-        enemyShip.setPoint(new Point(x, y));
+
+        // Adjust stats based on difficulty
+        float healthModifier = 1.0f;
+        float speedModifier = 1.0f;
+
+        switch (currentDifficulty) {
+            case EASY:
+                healthModifier = 0.75f;
+                speedModifier = 0.8f;
+                break;
+            case MEDIUM:
+                // No change from base
+                break;
+            case HARD:
+                healthModifier = 1.25f;
+                speedModifier = 1.2f;
+                break;
+        }
+
+        int finalHealth = Math.max(1, (int) Math.ceil(baseHealth * healthModifier));
+        int finalSpeed = Math.round(baseSpeed * speedModifier);
+
+        enemyShip = gameCharacterService.createEnemyShip(new Point(x, y), drawable);
+        enemyShip.setHealth(finalHealth);
+        enemyShip.setSpeed(finalSpeed);
+        enemyShip.setScore(score); // Score could also be adjusted by difficulty if desired
+
+        // enemyShip.setPoint(new Point(x, y)); // setPoint is already called in createEnemyShip from service
         enemies.add(enemyShip);
         DeadNotifier deadNotifier = new DeadNotifier(enemyShip, context);
     }

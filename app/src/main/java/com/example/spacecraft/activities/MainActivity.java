@@ -11,6 +11,7 @@ import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.spacecraft.adapters.ProfileAdapter;
+import com.example.spacecraft.components.DifficultyDialog;
 import com.example.spacecraft.components.GameView;
 import com.example.spacecraft.components.HighestScoreDialog;
 import com.example.spacecraft.components.ProfileDialog;
@@ -58,6 +59,12 @@ public class MainActivity extends AppCompatActivity {
         binding.playBtn.setOnClickListener(v -> startGameActivity());
         binding.profileBtn.setOnClickListener(v -> showProfileDialog(true));
         binding.heightScoreBtn.setOnClickListener(v -> showHeightScoreDialog());
+        binding.difficultyBtn.setOnClickListener(v -> showDifficultyDialog());
+    }
+
+    private void showDifficultyDialog() {
+        DifficultyDialog dialog = new DifficultyDialog();
+        dialog.show(getSupportFragmentManager(), DifficultyDialog.TAG);
     }
 
     private void showHeightScoreDialog() {

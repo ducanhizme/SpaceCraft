@@ -23,4 +23,7 @@ public class Constants {
     public static int EXPLOSION_FRAME_TIME = 40000;
     public static int DEFAULT_GENERATE_ENEMY = 3;
 
+    // SharedPreferences Keys
+    public static final String PREFS_NAME = "SpaceCraftPrefs";
+    public static final String KEY_DIFFICULTY = "difficulty";
 }

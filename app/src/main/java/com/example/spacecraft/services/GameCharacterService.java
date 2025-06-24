@@ -12,6 +12,7 @@ import com.example.spacecraft.models.game.PlayerShip;
 import com.example.spacecraft.utils.BackgroundManager;
 import com.example.spacecraft.utils.CommonHelper;
 import com.example.spacecraft.utils.Constants;
+import com.example.spacecraft.utils.Difficulty;
 
 public class GameCharacterService {
 
@@ -42,8 +43,24 @@ public class GameCharacterService {
         SensorManager sensorManager = (SensorManager) context.getSystemService(Context.SENSOR_SERVICE);
         Sensor gyroscope = sensorManager.getDefaultSensor(Sensor.TYPE_GYROSCOPE);
         PlayerShip playerShip = new PlayerShip(this.deviceSize.x, deviceSize.y, sensorManager, gyroscope, context.getResources(), Constants.PLAYER_SHIP, screenRatioX, screenRatioY);
-        playerShip.setPoint( new Point((int) (deviceSize.x / 2f - playerShip.getWIDTH() / 2f), (int) (deviceSize.y - playerShip.getHEIGHT() * 10 * screenRatioY)));;
-        playerShip.setHealth(Constants.PLAYER_SHIP_HEALTH);
+        playerShip.setPoint( new Point((int) (deviceSize.x / 2f - playerShip.getWIDTH() / 2f), (int) (deviceSize.y - playerShip.getHEIGHT() * 10 * screenRatioY)));
+
+        DifficultyManager difficultyManager = new DifficultyManager(context);
+        Difficulty currentDifficulty = difficultyManager.loadDifficulty();
+        int playerHealth = Constants.PLAYER_SHIP_HEALTH;
+
+        switch (currentDifficulty) {
+            case EASY:
+                playerHealth = Constants.PLAYER_SHIP_HEALTH + 1;
+                break;
+            case MEDIUM:
+                // Default value is already set
+                break;
+            case HARD:
+                playerHealth = Math.max(1, Constants.PLAYER_SHIP_HEALTH - 1); // Ensure health is at least 1
+                break;
+        }
+        playerShip.setHealth(playerHealth);
         return playerShip;
     }
 
