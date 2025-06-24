@@ -8,7 +8,10 @@ import android.util.Log;
 import androidx.activity.EdgeToEdge;
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
+import android.content.DialogInterface;
+import android.widget.Toast;
 
 import com.example.spacecraft.adapters.ProfileAdapter;
 import com.example.spacecraft.components.GameView;
@@ -19,6 +22,7 @@ import com.example.spacecraft.models.app.Profile;
 import com.example.spacecraft.services.FirebaseService;
 import com.example.spacecraft.services.GoogleAuthService;
 import com.example.spacecraft.services.ProfileService;
+import com.example.spacecraft.utils.Constants;
 
 import java.util.List;
 
@@ -36,6 +40,10 @@ public class MainActivity extends AppCompatActivity {
         EdgeToEdge.enable(this);
         binding = ActivityMainBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
+
+        // Load difficulty settings first
+        Constants.loadDifficulty(this);
+
         googleAuthService = new GoogleAuthService(this);
         profileService = new ProfileService(this);
         initializeUI();
@@ -58,6 +66,22 @@ public class MainActivity extends AppCompatActivity {
         binding.playBtn.setOnClickListener(v -> startGameActivity());
         binding.profileBtn.setOnClickListener(v -> showProfileDialog(true));
         binding.heightScoreBtn.setOnClickListener(v -> showHeightScoreDialog());
+        binding.difficultyBtn.setOnClickListener(v -> showDifficultyDialog());
+    }
+
+    private void showDifficultyDialog() {
+        final String[] difficultyLevels = {Constants.DIFFICULTY_EASY, Constants.DIFFICULTY_MEDIUM, Constants.DIFFICULTY_HARD};
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle("Current Difficulty: " + Constants.currentDifficulty)
+                .setItems(difficultyLevels, (dialog, which) -> {
+                    String selectedDifficulty = difficultyLevels[which];
+                    Constants.setDifficulty(selectedDifficulty, MainActivity.this, true);
+                    Toast.makeText(MainActivity.this, "Difficulty set to " + selectedDifficulty, Toast.LENGTH_SHORT).show();
+                    // Update the dialog title if it's shown again, or re-create if necessary
+                    // For simplicity, we are not updating the title of the current dialog instance here
+                    // but new dialogs will show the updated currentDifficulty.
+                });
+        builder.create().show();
     }
 
     private void showHeightScoreDialog() {

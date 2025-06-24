@@ -43,7 +43,8 @@ public class GameCharacterService {
         Sensor gyroscope = sensorManager.getDefaultSensor(Sensor.TYPE_GYROSCOPE);
         PlayerShip playerShip = new PlayerShip(this.deviceSize.x, deviceSize.y, sensorManager, gyroscope, context.getResources(), Constants.PLAYER_SHIP, screenRatioX, screenRatioY);
         playerShip.setPoint( new Point((int) (deviceSize.x / 2f - playerShip.getWIDTH() / 2f), (int) (deviceSize.y - playerShip.getHEIGHT() * 10 * screenRatioY)));;
-        playerShip.setHealth(Constants.PLAYER_SHIP_HEALTH);
+        // Use currentPlayerHealth from Constants, which is now set by difficulty
+        playerShip.setHealth(Constants.currentPlayerHealth);
         return playerShip;
     }
 
